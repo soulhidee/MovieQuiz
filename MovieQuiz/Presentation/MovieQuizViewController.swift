@@ -7,7 +7,9 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-//        showNextQuestionOrResults()
+        let firstQuestion = questions[currentQuestionIndex]
+        let viewModel = convert(model: firstQuestion)
+        show(quiz: viewModel)
     }
     
     @IBAction private func noButtonClicked(_ sender: Any) {
