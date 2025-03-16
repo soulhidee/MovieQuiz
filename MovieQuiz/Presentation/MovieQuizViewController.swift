@@ -33,7 +33,6 @@ final class MovieQuizViewController: UIViewController {
         let viewModel = convert(model: firstQuestion)
         show(quiz: viewModel)
         imageView.layer.masksToBounds = true
-        imageView.layer.borderWidth = 8
         imageView.layer.cornerRadius = 20
     }
 
