@@ -3,6 +3,8 @@ import UIKit
 final class MovieQuizViewController: UIViewController {
 
     // MARK: - Outlets
+    @IBOutlet private var noButton: UIButton!
+    @IBOutlet private var yesButton: UIButton!
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var textLabel: UILabel!
     @IBOutlet private var counterLabel: UILabel!
@@ -36,13 +38,17 @@ final class MovieQuizViewController: UIViewController {
     }
 
     // MARK: - Actions
-    @IBAction private func noButtonClicked(_ sender: Any) {
+    @IBAction private func noButtonClicked(_ sender: UIButton) {
+        sender.isEnabled = false
+        yesButton.isEnabled = false
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
 
-    @IBAction private func yesButtonClicked(_ sender: Any) {
+    @IBAction private func yesButtonClicked(_ sender: UIButton) {
+        sender.isEnabled = false
+        noButton.isEnabled = false
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
@@ -68,10 +74,12 @@ final class MovieQuizViewController: UIViewController {
         if isCorrect {
             correctAnswers += 1
         }
-        
+        imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.yesButton.isEnabled = true
+            self.noButton.isEnabled = true
             self.showNextQuestionOrResults()
             self.imageView.layer.borderWidth = 0
         }
