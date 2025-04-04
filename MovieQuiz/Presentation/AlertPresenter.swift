@@ -1,9 +1,13 @@
 import UIKit
 
-final class AletPresenter {
+final class AlertPresenter {
     private weak var presentingController: UIViewController?
     
-    private func show(alert model: AlertModel) {
+    init(presentingController: UIViewController) {
+         self.presentingController = presentingController
+     }
+    
+    func show(alert model: AlertModel) {
         let alert = UIAlertController(
             title: model.title,
             message: model.message,
