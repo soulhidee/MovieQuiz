@@ -1,8 +1,7 @@
-//
-//  GameResult.swift
-//  MovieQuiz
-//
-//  Created by Даниил on 07.04.2025.
-//
-
 import Foundation
+
+struct GameResult {
+    let correct: Int
+    let total: Int
+    let date: Date
+}
