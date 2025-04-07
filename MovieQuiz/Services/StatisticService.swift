@@ -1,33 +1,34 @@
 import Foundation
 
-class StatisticService: StatisticServiceProtocol {
+final class StatisticService: StatisticServiceProtocol {
+    private let storage: UserDefaults = .standard
     var gamesCount: Int {
         get {
-            UserDefaults.standard.integer(forKey: "gamesCount")
+            storage.integer(forKey: "gamesCount")
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "gamesCount")
+            storage.set(newValue, forKey: "gamesCount")
         }
     }
     
     var bestGame: GameResult {
         get {
-            let correct = UserDefaults.standard.integer(forKey: "bestGameCorrect")
-            let total = UserDefaults.standard.integer(forKey: "bestGameTotal")
-            let date = UserDefaults.standard.object(forKey: "bestGameDate") as? Date ?? Date()
+            let correct = storage.integer(forKey: "bestGameCorrect")
+            let total = storage.integer(forKey: "bestGameTotal")
+            let date = storage.object(forKey: "bestGameDate") as? Date ?? Date()
             
             return GameResult(correct: correct, total: total, date: date)
         }
         set {
-            UserDefaults.standard.set(newValue.correct, forKey: "bestGameCorrect")
-            UserDefaults.standard.set(newValue.total, forKey: "bestGameTotal")
-            UserDefaults.standard.set(newValue.date, forKey: "bestGameDate")
+            storage.set(newValue.correct, forKey: "bestGameCorrect")
+            storage.set(newValue.total, forKey: "bestGameTotal")
+            storage.set(newValue.date, forKey: "bestGameDate")
         }
     }
     
     var totalAccuracy: Double {
-        let correctAnswers = UserDefaults.standard.integer(forKey: "totalCorrect")
-        let totalQuestions = UserDefaults.standard.integer(forKey: "totalQuestions")
+        let correctAnswers = storage.integer(forKey: "totalCorrect")
+        let totalQuestions = storage.integer(forKey: "totalQuestions")
         
         guard totalQuestions != 0 else {
             return 0.0
