@@ -25,7 +25,16 @@ class StatisticService: StatisticServiceProtocol {
         }
     }
     
-    var totalAccuracy: Double = 0.0
+    var totalAccuracy: Double {
+        let correctAnswers = UserDefaults.standard.integer(forKey: "totalCorrect")
+        let totalQuestions = UserDefaults.standard.integer(forKey: "totalQuestions")
+        
+        guard totalQuestions != 0 else {
+            return 0.0
+        }
+        return (Double(correctAnswers) / Double(totalQuestions)) * 100
+    }
+    
     
     func store(correct count: Int, total amount: Int) {
         
