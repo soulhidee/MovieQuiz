@@ -16,19 +16,23 @@ class QuestionFactory: QuestionFactoryProtocol {
     ]
     
     weak var delegate: QuestionFactoryDelegate?
+    private var shuffledQuestions: [QuizQuestion] = []
+    private var currentIndex = 0
     
     func requestNextQuestion() {
-        guard let index = (0..<questions.count).randomElement() else {
-            delegate?.didReceiveNextQuestion(question: nil)
-            return
+        if currentIndex == shuffledQuestions.count {
+            shuffledQuestions = questions.shuffled()
+            currentIndex = 0
         }
         
-        let question = questions[safe: index]
+        let question = shuffledQuestions[currentIndex]
+        currentIndex += 1
         delegate?.didReceiveNextQuestion(question: question)
     }
     
     func setup(delegate: QuestionFactoryDelegate) {
         self.delegate = delegate
+        shuffledQuestions = questions.shuffled()
     }
 
     
