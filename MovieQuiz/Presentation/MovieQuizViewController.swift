@@ -103,7 +103,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
     }
     
-    
     private func show(quiz result: QuizResultsViewModel) {
         guard let statisticService = statisticService else { return }
         statisticService.store(correct: correctAnswers, total: questionsAmount)
@@ -125,9 +124,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 self.currentQuestionIndex = 0
                 self.correctAnswers = 0
                 self.questionFactory?.requestNextQuestion()
-            }
-        )
-        
+            })
         alertPresenter?.show(alert: alertModel)
     }
     
