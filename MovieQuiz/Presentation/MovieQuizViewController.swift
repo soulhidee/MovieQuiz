@@ -36,10 +36,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else {
-            return
-        }
-        
+        guard let question else { return }
         currentQuestion = question
         let viewModel = convert(model: question)
         
@@ -115,10 +112,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     
     private func show(quiz result: QuizResultsViewModel) {
-        guard let statisticService = statisticService else {
-            print("statisticService is nil")
-            return
-        }
+        guard let statisticService = statisticService else { return }
         statisticService.store(correct: correctAnswers, total: questionsAmount)
         let bestGame = statisticService.bestGame
         let dateString = bestGame.date.dateTimeString
