@@ -4,8 +4,8 @@ final class AlertPresenter {
     private weak var presentingController: UIViewController?
     
     init(presentingController: UIViewController) {
-         self.presentingController = presentingController
-     }
+        self.presentingController = presentingController
+    }
     
     func show(alert model: AlertModel) {
         let alert = UIAlertController(
@@ -15,12 +15,11 @@ final class AlertPresenter {
         )
         
         let action = UIAlertAction(
-                  title: model.buttonText,
-                  style: .default
-              ) { _ in
-                  model.completion()
-              }
-            
+            title: model.buttonText,
+            style: .default
+        ) { _ in
+            model.completion()
+        }
         
         alert.addAction(action)
         presentingController?.present(alert, animated: true)

@@ -31,7 +31,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 20
         
-
+        
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -112,7 +112,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             questionFactory?.requestNextQuestion()
         }
     }
-
+    
     
     private func show(quiz result: QuizResultsViewModel) {
         statisticService.store(correct: correctAnswers, total: questionsAmount)
@@ -138,9 +138,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         alertPresenter?.show(alert: alertModel)
     }
-    
-    
-    
+
 }
 
 
