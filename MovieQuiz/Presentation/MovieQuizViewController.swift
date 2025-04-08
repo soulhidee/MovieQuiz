@@ -17,7 +17,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenter?
-    private var statisticService: StatisticServiceProtocol!
+    private var statisticService: StatisticServiceProtocol?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -115,6 +115,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     
     private func show(quiz result: QuizResultsViewModel) {
+        guard let statisticService = statisticService else {
+            print("statisticService is nil")
+            return
+        }
         statisticService.store(correct: correctAnswers, total: questionsAmount)
         let bestGame = statisticService.bestGame
         let dateString = bestGame.date.dateTimeString
