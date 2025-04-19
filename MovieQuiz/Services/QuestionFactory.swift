@@ -4,16 +4,18 @@ final class QuestionFactory: QuestionFactoryProtocol {
     private let moviesLoder: MoviesLoading
     private weak var delegate: QuestionFactoryDelegate?
     
+    private var movies: [Movie] = []
+    private var shuffledMovies: [Movie] = []
+    private var currentIndex = 0
+    
     init(moviesLoder: MoviesLoading, delegate: QuestionFactoryDelegate?) {
         self.moviesLoder = moviesLoder
         self.delegate = delegate
     }
     
-    private var movies: [Movie]
-    
     func loadData() {
-        moviesLoder.loadMovies { [weak self ] result in
-            guard let self else { return }
+        moviesLoder.loadMovies { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let mostPopularMovies):
                 self.movies = mostPopularMovies.items
@@ -25,13 +27,10 @@ final class QuestionFactory: QuestionFactoryProtocol {
         }
     }
     
-    private var shuffledMovies: [Movie] = []
-    private var currentIndex = 0
-    
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
-            
             guard let self = self else { return }
+            
             if self.currentIndex == self.shuffledMovies.count {
                 self.shuffledMovies = self.movies.shuffled()
                 self.currentIndex = 0
@@ -49,31 +48,19 @@ final class QuestionFactory: QuestionFactoryProtocol {
             }
             
             let rating = Float(movie.rating) ?? 0
-            
             let text = "Рейтинг этого фильма больше чем 7?"
-            
             let correctAnswer = rating > 7
             
-            let question = QuizQuestion(image: imageData,
-                                        text: text,
-                                        correctAnswer: correctAnswer)
+            let question = QuizQuestion(image: imageData, text: text, correctAnswer: correctAnswer)
             
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+            DispatchQueue.main.async {
                 self.delegate?.didReceiveNextQuestion(question: question)
             }
         }
-        
     }
-    
-    func setup(delegate: QuestionFactoryDelegate) {
-        self.delegate = delegate
-        shuffledQuestions = questions.shuffled()
-    }
-    
-    
 }
 
+Теперь код соответствует стилю и не содержит комментариев.
 
 //private let questions: [QuizQuestion] = [
 //    QuizQuestion(image: "The Godfather", text: "Рейтинг этого фильма больше чем 6?", correctAnswer: true),
