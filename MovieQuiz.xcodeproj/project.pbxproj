@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		864DC30B2DB396B400C4F5A9 /* MostPopularMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864DC30A2DB396B400C4F5A9 /* MostPopularMovies.swift */; };
+		864DC30D2DB3993100C4F5A9 /* MoviesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864DC30C2DB3993100C4F5A9 /* MoviesLoader.swift */; };
 		866CC5982D9ECC14007CE0D8 /* QuestionFactoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CC5972D9ECC14007CE0D8 /* QuestionFactoryDelegate.swift */; };
 		866CC59A2D9F18CB007CE0D8 /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CC5992D9F18CB007CE0D8 /* AlertModel.swift */; };
 		866CC59C2D9F1936007CE0D8 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CC59B2D9F1936007CE0D8 /* AlertPresenter.swift */; };
@@ -34,6 +35,7 @@
 
 /* Begin PBXFileReference section */
 		864DC30A2DB396B400C4F5A9 /* MostPopularMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostPopularMovies.swift; sourceTree = "<group>"; };
+		864DC30C2DB3993100C4F5A9 /* MoviesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesLoader.swift; sourceTree = "<group>"; };
 		866CC5972D9ECC14007CE0D8 /* QuestionFactoryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactoryDelegate.swift; sourceTree = "<group>"; };
 		866CC5992D9F18CB007CE0D8 /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
 		866CC59B2D9F1936007CE0D8 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				86B975A02DA446B400B9DFAA /* StatisticServiceProtocol.swift */,
 				86B975A42DA4496400B9DFAA /* StatisticService.swift */,
 				868894F72DAFEC9C0012E7A5 /* NetworkClient.swift */,
+				864DC30C2DB3993100C4F5A9 /* MoviesLoader.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -248,6 +251,7 @@
 				86FAA8012D9B07C7002F418B /* QuestionFactory.swift in Sources */,
 				866CC5982D9ECC14007CE0D8 /* QuestionFactoryDelegate.swift in Sources */,
 				AD1ABAB42831907B00B3E448 /* SceneDelegate.swift in Sources */,
+				864DC30D2DB3993100C4F5A9 /* MoviesLoader.swift in Sources */,
 				86FAA8042D9B0ACB002F418B /* QuizStepViewModel.swift in Sources */,
 				86B975A32DA4479D00B9DFAA /* GameResult.swift in Sources */,
 			);
