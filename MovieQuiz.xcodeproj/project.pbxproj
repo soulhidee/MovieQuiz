@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		864DC30B2DB396B400C4F5A9 /* MostPopularMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864DC30A2DB396B400C4F5A9 /* MostPopularMovies.swift */; };
 		866CC5982D9ECC14007CE0D8 /* QuestionFactoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CC5972D9ECC14007CE0D8 /* QuestionFactoryDelegate.swift */; };
 		866CC59A2D9F18CB007CE0D8 /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CC5992D9F18CB007CE0D8 /* AlertModel.swift */; };
 		866CC59C2D9F1936007CE0D8 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 866CC59B2D9F1936007CE0D8 /* AlertPresenter.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		864DC30A2DB396B400C4F5A9 /* MostPopularMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostPopularMovies.swift; sourceTree = "<group>"; };
 		866CC5972D9ECC14007CE0D8 /* QuestionFactoryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactoryDelegate.swift; sourceTree = "<group>"; };
 		866CC5992D9F18CB007CE0D8 /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
 		866CC59B2D9F1936007CE0D8 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 				86FAA8072D9B0B05002F418B /* QuizQuestion.swift */,
 				866CC5992D9F18CB007CE0D8 /* AlertModel.swift */,
 				86B975A22DA4479D00B9DFAA /* GameResult.swift */,
+				864DC30A2DB396B400C4F5A9 /* MostPopularMovies.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 				86FAA8082D9B0B05002F418B /* QuizQuestion.swift in Sources */,
 				AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */,
 				AD1ABAB62831907B00B3E448 /* MovieQuizViewController.swift in Sources */,
+				864DC30B2DB396B400C4F5A9 /* MostPopularMovies.swift in Sources */,
 				AD77F5742857F8810062FB14 /* Date+Extensions.swift in Sources */,
 				866CC59A2D9F18CB007CE0D8 /* AlertModel.swift in Sources */,
 				AD1ABAB22831907B00B3E448 /* AppDelegate.swift in Sources */,
