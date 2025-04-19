@@ -83,9 +83,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
-            setAnswerButtonsState(isEnabled: true)
-            self.showNextQuestionOrResults()
-            self.imageView.layer.borderWidth = 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.setAnswerButtonsState(isEnabled: true)
+                self.showNextQuestionOrResults()
+                self.imageView.layer.borderWidth = 0
+            }
         }
     }
     
@@ -159,7 +161,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
     }
-
+    
     func didFailToLoadData(with error: Error) {
         showNetworkError(message: error.localizedDescription)
     }
