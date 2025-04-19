@@ -3,7 +3,6 @@ import Foundation
 final class QuestionFactory: QuestionFactoryProtocol {
     private let moviesLoder: MoviesLoading
     private weak var delegate: QuestionFactoryDelegate?
-    
     private var movies: [Movie] = []
     private var shuffledMovies: [Movie] = []
     private var currentIndex = 0
@@ -12,7 +11,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
         self.moviesLoder = moviesLoder
         self.delegate = delegate
     }
-    
+
     func loadData() {
         moviesLoder.loadMovies { [weak self] result in
             DispatchQueue.main.async {
@@ -32,7 +31,6 @@ final class QuestionFactory: QuestionFactoryProtocol {
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
-            
             if self.currentIndex == self.shuffledMovies.count {
                 self.shuffledMovies = self.movies.shuffled()
                 self.currentIndex = 0
@@ -41,6 +39,7 @@ final class QuestionFactory: QuestionFactoryProtocol {
             guard self.currentIndex < self.shuffledMovies.count else {
                 return
             }
+            
             let movie = self.shuffledMovies[self.currentIndex]
             self.currentIndex += 1
             
@@ -55,7 +54,6 @@ final class QuestionFactory: QuestionFactoryProtocol {
             let rating = Float(movie.rating) ?? 0
             let text = "Рейтинг этого фильма больше чем 7?"
             let correctAnswer = rating > 7
-            
             let question = QuizQuestion(image: imageData, text: text, correctAnswer: correctAnswer)
             
             DispatchQueue.main.async {
