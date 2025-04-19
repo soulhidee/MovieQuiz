@@ -15,14 +15,16 @@ final class QuestionFactory: QuestionFactoryProtocol {
     
     func loadData() {
         moviesLoder.loadMovies { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let mostPopularMovies):
-                self.movies = mostPopularMovies.items
-                self.shuffledMovies = self.movies.shuffled()
-                self.delegate?.didLoadDataFromServer()
-            case .failure(let error):
-                self.delegate?.didFailToLoadData(with: error)
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let mostPopularMovies):
+                    self.movies = mostPopularMovies.items
+                    self.shuffledMovies = self.movies.shuffled()
+                    self.delegate?.didLoadDataFromServer()
+                case .failure(let error):
+                    self.delegate?.didFailToLoadData(with: error)
+                }
             }
         }
     }
@@ -36,6 +38,9 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 self.currentIndex = 0
             }
             
+            guard self.currentIndex < self.shuffledMovies.count else {
+                return
+            }
             let movie = self.shuffledMovies[self.currentIndex]
             self.currentIndex += 1
             
@@ -60,7 +65,6 @@ final class QuestionFactory: QuestionFactoryProtocol {
     }
 }
 
-Теперь код соответствует стилю и не содержит комментариев.
 
 //private let questions: [QuizQuestion] = [
 //    QuizQuestion(image: "The Godfather", text: "Рейтинг этого фильма больше чем 6?", correctAnswer: true),
