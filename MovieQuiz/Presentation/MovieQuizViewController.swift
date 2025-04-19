@@ -157,5 +157,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             }
         alertPresenter?.show(alert: model)
     }
+    
+    func didLoadDataFromServer() {
+        hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
+    }
 }
 
