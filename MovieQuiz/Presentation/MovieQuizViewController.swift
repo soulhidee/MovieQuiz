@@ -158,8 +158,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     func didLoadDataFromServer() {
-        hideLoadingIndicator()
-        questionFactory?.requestNextQuestion()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.hideLoadingIndicator()
+            self.questionFactory?.requestNextQuestion()
+        }
     }
     
     func didFailToLoadData(with error: Error) {

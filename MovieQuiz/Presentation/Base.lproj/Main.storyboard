@@ -94,19 +94,19 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="xPS-W2-c1n">
-                                <rect key="frame" x="210" y="468" width="20" height="20"/>
-                                <color key="backgroundColor" name="YP Red"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="xPS-W2-c1n">
+                                <rect key="frame" x="210" y="467.66666666666669" width="20" height="20"/>
+                                <color key="color" name="YP Black"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="xPS-W2-c1n" firstAttribute="centerX" secondItem="v7w-ep-GUH" secondAttribute="centerX" id="2m7-ih-yfz"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="TGY-15-opa" secondAttribute="bottom" id="6yz-4G-oQV"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="TGY-15-opa" secondAttribute="trailing" constant="20" id="8zu-Jh-WAt"/>
-                            <constraint firstItem="xPS-W2-c1n" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="HRj-9D-0zQ"/>
                             <constraint firstItem="TGY-15-opa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="TCt-pi-Gzd"/>
-                            <constraint firstItem="xPS-W2-c1n" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="odm-rC-7lx"/>
+                            <constraint firstItem="xPS-W2-c1n" firstAttribute="centerY" secondItem="v7w-ep-GUH" secondAttribute="centerY" id="aP0-Vj-n0f"/>
                             <constraint firstItem="TGY-15-opa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="pYC-wF-7ug"/>
                         </constraints>
                     </view>
@@ -127,9 +127,6 @@
     <resources>
         <namedColor name="YP Black">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="YP Red">
-            <color red="0.96078431372549022" green="0.41960784313725491" blue="0.42352941176470588" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="YP White">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
