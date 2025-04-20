@@ -84,8 +84,8 @@
 				86B975A02DA446B400B9DFAA /* StatisticServiceProtocol.swift */,
 				86B975A42DA4496400B9DFAA /* StatisticService.swift */,
 				868894F72DAFEC9C0012E7A5 /* NetworkClient.swift */,
-				864DC30C2DB3993100C4F5A9 /* MoviesLoader.swift */,
 				864A0A572DB50EA800D56C82 /* NetworkError.swift */,
+				864DC30C2DB3993100C4F5A9 /* MoviesLoader.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
