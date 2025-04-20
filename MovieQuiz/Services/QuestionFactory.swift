@@ -30,6 +30,18 @@ final class QuestionFactory: QuestionFactoryProtocol {
         }
     }
     
+    func generateQuestionText(for movie: Movie) -> String {
+        let comparisonOperator = Bool.random() ? "больше" : "меньше"
+        let averageRating: Float = 7.0
+        let rating: Float = Float(movie.rating) ?? 0.0
+        
+        if comparisonOperator == "больше" {
+            return "Рейтинг этого фильма \(comparisonOperator) чем \(averageRating)?"
+        } else {
+            return "Рейтинг этого фильма \(comparisonOperator) чем \(averageRating)?"
+        }
+    }
+    
     func requestNextQuestion() {
         DispatchQueue.global().async { [weak self] in
             guard let self else { return }
@@ -54,13 +66,13 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 print("Failed to load image")
             }
             
+            let questionText = generateQuestionText(for: movie)
             let rating = Float(movie.rating) ?? .zero
-            let text = "Рейтинг этого фильма больше чем 7?"
             let correctAnswer = rating > 7
             
             let question = QuizQuestion(
                 image: imageData,
-                text: text,
+                text: questionText,
                 correctAnswer: correctAnswer
             )
             
