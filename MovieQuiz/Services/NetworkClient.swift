@@ -13,13 +13,14 @@ struct NetworkClient {
                 return
             }
             
-            if let response = response as? HTTPURLResponse,
-               response.statusCode < 200 || response.statusCode >= 300 {
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200..<300).contains(httpResponse.statusCode) else {
                 handler(.failure(NetworkError.codeError))
                 return
             }
             
-            guard let data = data else { return }
+            guard let data else { return }
+            
             handler(.success(data))
         }
         task.resume()

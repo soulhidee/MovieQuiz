@@ -13,21 +13,22 @@ struct MoviesLoader: MoviesLoading {
         }
         return url
     }
-    func loadMovies(handler: @escaping (Result<MostPopularMovies, any Error>) -> Void) {
+    
+    func loadMovies(handler: @escaping (Result<MostPopularMovies, Error>) -> Void) {
         networkClient.fetch(url: mostPopularMoviesUrl) { result in
-            switch result {
-               case .success(let data):
-                do {
-                    let decoder = JSONDecoder()
-                    let mostPopularMovies = try decoder.decode(MostPopularMovies.self, from: data)
-                    handler(.success(mostPopularMovies))
-                } catch {
-                    handler(.failure(error))
-                }
-            case .failure(let error):
-                handler(.failure(error))
+            let decodedResult = result.flatMap { data in
+                self.decode(MostPopularMovies.self, from: data)
             }
+            handler(decodedResult)
         }
     }
     
+    private func decode<T: Decodable>(_ type: T.Type, from data: Data) -> Result<T, Error> {
+        do {
+            let model = try JSONDecoder().decode(T.self, from: data)
+            return .success(model)
+        } catch {
+            return .failure(error)
+        }
+    }
 }
