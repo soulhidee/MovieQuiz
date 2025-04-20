@@ -53,19 +53,21 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let viewModel = convert(model: question) else { return }
         
         DispatchQueue.main.async { [weak self] in
+            self?.hideLoadingIndicator()
             self?.show(quiz: viewModel)
         }
     }
     
     func didLoadDataFromServer() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.hideLoadingIndicator()
+            self.showLoadingIndicator()
             self.questionFactory?.requestNextQuestion()
         }
     }
     
     func didFailToLoadData(with error: Error) {
         if let networkError = error as? NetworkError {
+            hideLoadingIndicator()
             showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
         }
     }
@@ -90,7 +92,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel? {
         guard let image = UIImage(data: model.image) else {
-            showNetworkError(message: NetworkError.imageDataCorrupted.errorDescription ?? "Неизвестная ошибка")
+            showNetworkError(message: NetworkError.imageDataCorrupted.localizedDescription)
             return nil
         }
         
@@ -134,6 +136,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             show(quiz: result)
         } else {
             currentQuestionIndex += 1
+            showLoadingIndicator()
             questionFactory?.requestNextQuestion()
         }
     }
@@ -188,6 +191,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             buttonText: "Попробовать ещё раз") { [weak self] in
                 guard let self = self else { return }
                 
+                self.showLoadingIndicator()
                 self.currentQuestionIndex = 0
                 self.correctAnswers = 0
                 self.questionFactory?.requestNextQuestion()
