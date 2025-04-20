@@ -6,6 +6,7 @@ enum NetworkError: LocalizedError {
     case decoding(Error)
     case network(Error)
     case imageDataCorrupted
+    case missingRating
     
     var errorDescription: String? {
         switch self {
@@ -19,6 +20,8 @@ enum NetworkError: LocalizedError {
             return "Сетевая ошибка: \(error.localizedDescription)"
         case.imageDataCorrupted:
             return "Не удалось загрузить изображение."
+        case.missingRating:
+            return "Рейтинг фильма отсутствует или не может быть преобразован."
         }
     }
 }

@@ -30,16 +30,23 @@ final class QuestionFactory: QuestionFactoryProtocol {
         }
     }
     
-    func generateQuestionText(for movie: Movie) -> String {
-        let comparisonOperator = Bool.random() ? "больше" : "меньше"
-        let averageRating: Float = 7.0
-        let rating: Float = Float(movie.rating) ?? 0.0
+    func generateQuestion(for movie: Movie) throws -> (questionText: String, correctAnswer: Bool) {
+        let randomComparisonValue = Float.random(in: 5.0..<10)
+        let formattedValue = String(format: "%.2f", randomComparisonValue)
         
-        if comparisonOperator == "больше" {
-            return "Рейтинг этого фильма \(comparisonOperator) чем \(averageRating)?"
-        } else {
-            return "Рейтинг этого фильма \(comparisonOperator) чем \(averageRating)?"
+        guard let movieRating = Float(movie.rating) else {
+            throw NetworkError.missingRating
         }
+        
+        let isGreaterComparison = Bool.random()
+        let comparisonOperator = isGreaterComparison ? "больше" : "меньше"
+        let questionText = "Рейтинг этого фильма \(comparisonOperator) чем \(formattedValue)?"
+        
+        let correctAnswer = isGreaterComparison
+            ? movieRating > randomComparisonValue
+            : movieRating < randomComparisonValue
+        
+        return (questionText, correctAnswer)
     }
     
     func requestNextQuestion() {
@@ -59,25 +66,33 @@ final class QuestionFactory: QuestionFactoryProtocol {
             self.currentIndex += 1
             
             var imageData = Data()
-            
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
             } catch {
-                print("Failed to load image")
+                DispatchQueue.main.async {
+                    self.delegate?.didFailToLoadData(with: NetworkError.imageDataCorrupted)
+                }
+                return
             }
             
-            let questionText = generateQuestionText(for: movie)
-            let rating = Float(movie.rating) ?? .zero
-            let correctAnswer = rating > 7
-            
-            let question = QuizQuestion(
-                image: imageData,
-                text: questionText,
-                correctAnswer: correctAnswer
-            )
-            
-            DispatchQueue.main.async {
-                self.delegate?.didReceiveNextQuestion(question: question)
+            do {
+                let generatedQuestion = try generateQuestion(for: movie)
+                let questionText = generatedQuestion.questionText
+                let correctAnswer = generatedQuestion.correctAnswer
+                
+                let question = QuizQuestion(
+                    image: imageData,
+                    text: questionText,
+                    correctAnswer: correctAnswer
+                )
+                
+                DispatchQueue.main.async {
+                    self.delegate?.didReceiveNextQuestion(question: question)
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.delegate?.didFailToLoadData(with: error)
+                }
             }
         }
     }
