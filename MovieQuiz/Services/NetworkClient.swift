@@ -3,6 +3,7 @@ import Foundation
 struct NetworkClient {
     func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
         let request = URLRequest(url: url)
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 handler(.failure(NetworkError.network(error)))
@@ -14,7 +15,7 @@ struct NetworkClient {
                 handler(.failure(NetworkError.codeError))
                 return
             }
-        
+            
             guard let data else {
                 handler(.failure(NetworkError.noData))
                 return

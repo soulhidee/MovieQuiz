@@ -24,4 +24,3 @@ struct Movie: Decodable {
         case imageURL = "image"
     }
 }
-

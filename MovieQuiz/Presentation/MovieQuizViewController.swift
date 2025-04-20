@@ -1,6 +1,5 @@
 import UIKit
 
-
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - Outlets
@@ -31,7 +30,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Actions
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         setAnswerButtonsState(isEnabled: false)
-        guard let currentQuestion = currentQuestion else { return }
+        guard let currentQuestion else { return }
         
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
@@ -39,7 +38,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         setAnswerButtonsState(isEnabled: false)
-        guard let currentQuestion = currentQuestion else { return }
+        guard let currentQuestion else { return }
         
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
@@ -116,7 +115,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.setAnswerButtonsState(isEnabled: true)
@@ -159,7 +158,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             message: message,
             buttonText: result.buttonText,
             completion: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 
                 self.currentQuestionIndex = .zero
                 self.correctAnswers = .zero
@@ -188,17 +187,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         let model = AlertModel(
             title: "Ошибка",
             message: message,
-            buttonText: "Попробовать ещё раз") { [weak self] in
-                guard let self = self else { return }
-                
-                self.showLoadingIndicator()
-                self.currentQuestionIndex = .zero
-                self.correctAnswers = .zero
-                self.questionFactory?.requestNextQuestion()
-            }
+            buttonText: "Попробовать ещё раз"
+        ) { [weak self] in
+            guard let self else { return }
+            
+            self.showLoadingIndicator()
+            self.currentQuestionIndex = .zero
+            self.correctAnswers = .zero
+            self.questionFactory?.requestNextQuestion()
+        }
         alertPresenter?.show(alert: model)
     }
-    
-
 }
 
