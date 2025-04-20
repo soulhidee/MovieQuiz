@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+=======
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+>>>>>>> sprint_06
     <device id="retina6_9" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,7 +22,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="TGY-15-opa">
+<<<<<<< HEAD
                                 <rect key="frame" x="20" y="72" width="400" height="850"/>
+=======
+                                <rect key="frame" x="20" y="134" width="400" height="754"/>
+>>>>>>> sprint_06
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ct1-gB-arx">
                                         <rect key="frame" x="0.0" y="0.0" width="400" height="23.666666666666668"/>
@@ -38,20 +46,32 @@
                                         </subviews>
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="v7w-ep-GUH" userLabel="Preview Image">
+<<<<<<< HEAD
                                         <rect key="frame" x="0.0" y="43.666666666666686" width="400" height="600"/>
+=======
+                                        <rect key="frame" x="0.0" y="43.666666666666629" width="400" height="600"/>
+>>>>>>> sprint_06
                                         <color key="backgroundColor" name="assetYPWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="v7w-ep-GUH" secondAttribute="height" multiplier="2:3" id="AaG-GT-ZUX"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Рейтинг этого фильма меньше чем 5?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OUI-YN-5y9" userLabel="Question Label">
+<<<<<<< HEAD
                                         <rect key="frame" x="0.0" y="663.66666666666663" width="400" height="106.33333333333337"/>
+=======
+                                        <rect key="frame" x="0.0" y="663.66666666666663" width="400" height="10.333333333333371"/>
+>>>>>>> sprint_06
                                         <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="23"/>
                                         <color key="textColor" name="YP White"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="29e-1I-bS0">
+<<<<<<< HEAD
                                         <rect key="frame" x="0.0" y="790" width="400" height="60"/>
+=======
+                                        <rect key="frame" x="0.0" y="694" width="400" height="60"/>
+>>>>>>> sprint_06
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LKC-FZ-6a8" userLabel="No Button">
                                                 <rect key="frame" x="0.0" y="0.0" width="190" height="60"/>
@@ -94,17 +114,24 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="xPS-W2-c1n">
+                                <rect key="frame" x="210" y="467.66666666666669" width="20" height="20"/>
+                                <color key="color" name="YP Black"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
+                            <constraint firstItem="xPS-W2-c1n" firstAttribute="centerX" secondItem="v7w-ep-GUH" secondAttribute="centerX" id="2m7-ih-yfz"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="TGY-15-opa" secondAttribute="bottom" id="6yz-4G-oQV"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="TGY-15-opa" secondAttribute="trailing" constant="20" id="8zu-Jh-WAt"/>
                             <constraint firstItem="TGY-15-opa" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="TCt-pi-Gzd"/>
+                            <constraint firstItem="xPS-W2-c1n" firstAttribute="centerY" secondItem="v7w-ep-GUH" secondAttribute="centerY" id="aP0-Vj-n0f"/>
                             <constraint firstItem="TGY-15-opa" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="pYC-wF-7ug"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="xPS-W2-c1n" id="ZLG-nC-blo"/>
                         <outlet property="counterLabel" destination="aiC-r1-ZmU" id="vRs-UG-Oj6"/>
                         <outlet property="imageView" destination="v7w-ep-GUH" id="RZ2-9B-T2T"/>
                         <outlet property="noButton" destination="LKC-FZ-6a8" id="gFj-IV-J45"/>

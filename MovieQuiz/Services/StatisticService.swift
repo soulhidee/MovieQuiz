@@ -42,7 +42,11 @@ final class StatisticService: StatisticServiceProtocol {
         let totalQuestions = storage.integer(forKey: Keys.totalQuestions.rawValue)
         
         guard totalQuestions != 0 else {
+
             return 0.0
+=======
+            return .zero
+>>>>>>> sprint_06
         }
         return (Double(correctAnswers) / Double(totalQuestions)) * 100
     }
