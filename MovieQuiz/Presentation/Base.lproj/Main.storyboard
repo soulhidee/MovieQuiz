@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-=======
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
->>>>>>> sprint_06
     <device id="retina6_9" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -22,11 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="TGY-15-opa">
-<<<<<<< HEAD
-                                <rect key="frame" x="20" y="72" width="400" height="850"/>
-=======
                                 <rect key="frame" x="20" y="134" width="400" height="754"/>
->>>>>>> sprint_06
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ct1-gB-arx">
                                         <rect key="frame" x="0.0" y="0.0" width="400" height="23.666666666666668"/>
@@ -46,32 +38,20 @@
                                         </subviews>
                                     </stackView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="v7w-ep-GUH" userLabel="Preview Image">
-<<<<<<< HEAD
-                                        <rect key="frame" x="0.0" y="43.666666666666686" width="400" height="600"/>
-=======
                                         <rect key="frame" x="0.0" y="43.666666666666629" width="400" height="600"/>
->>>>>>> sprint_06
                                         <color key="backgroundColor" name="assetYPWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="v7w-ep-GUH" secondAttribute="height" multiplier="2:3" id="AaG-GT-ZUX"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Рейтинг этого фильма меньше чем 5?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OUI-YN-5y9" userLabel="Question Label">
-<<<<<<< HEAD
-                                        <rect key="frame" x="0.0" y="663.66666666666663" width="400" height="106.33333333333337"/>
-=======
                                         <rect key="frame" x="0.0" y="663.66666666666663" width="400" height="10.333333333333371"/>
->>>>>>> sprint_06
                                         <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="23"/>
                                         <color key="textColor" name="YP White"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="29e-1I-bS0">
-<<<<<<< HEAD
-                                        <rect key="frame" x="0.0" y="790" width="400" height="60"/>
-=======
                                         <rect key="frame" x="0.0" y="694" width="400" height="60"/>
->>>>>>> sprint_06
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LKC-FZ-6a8" userLabel="No Button">
                                                 <rect key="frame" x="0.0" y="0.0" width="190" height="60"/>

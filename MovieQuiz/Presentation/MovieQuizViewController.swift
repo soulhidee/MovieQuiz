@@ -4,20 +4,12 @@ import UIKit
 final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     // MARK: - Outlets
-<<<<<<< HEAD
-    @IBOutlet private var noButton: UIButton!
-    @IBOutlet private var yesButton: UIButton!
-    @IBOutlet private var imageView: UIImageView!
-    @IBOutlet private var textLabel: UILabel!
-    @IBOutlet private var counterLabel: UILabel!
-=======
     @IBOutlet private weak var noButton: UIButton!
     @IBOutlet private weak var yesButton: UIButton!
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var textLabel: UILabel!
     @IBOutlet private weak var counterLabel: UILabel!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
->>>>>>> sprint_06
     
     // MARK: - Properties
     private var currentQuestionIndex = 0
@@ -31,43 +23,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-<<<<<<< HEAD
-        let questionFactory = QuestionFactory()
-        questionFactory.setup(delegate: self)
-        self.questionFactory = questionFactory
-        questionFactory.requestNextQuestion()
-        alertPresenter = AlertPresenter(presentingController: self)
-        statisticService = StatisticService()
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 20
-    }
-    
-    // MARK: - QuestionFactoryDelegate
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question else { return }
-        currentQuestion = question
-        let viewModel = convert(model: question)
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.show(quiz: viewModel)
-        }
-    }
-    
-=======
         configureUI()
         configureServices()
         loadInitialData()
     }
     
->>>>>>> sprint_06
     // MARK: - Actions
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         setAnswerButtonsState(isEnabled: false)
         guard let currentQuestion = currentQuestion else { return }
-<<<<<<< HEAD
-=======
         
->>>>>>> sprint_06
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
@@ -75,16 +40,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         setAnswerButtonsState(isEnabled: false)
         guard let currentQuestion = currentQuestion else { return }
-<<<<<<< HEAD
-=======
         
->>>>>>> sprint_06
         let givenAnswer = true
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
-<<<<<<< HEAD
-=======
     // MARK: - QuestionFactoryDelegate
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question else { return }
@@ -108,7 +68,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         showNetworkError(message: error.localizedDescription)
     }
     
->>>>>>> sprint_06
     // MARK: - Private Methods
     private func configureUI() {
         showLoadingIndicator()
@@ -147,14 +106,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         }
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-<<<<<<< HEAD
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            setAnswerButtonsState(isEnabled: true)
-            self.showNextQuestionOrResults()
-            self.imageView.layer.borderWidth = 0
-=======
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             
@@ -163,7 +114,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 self.showNextQuestionOrResults()
                 self.imageView.layer.borderWidth = 0
             }
->>>>>>> sprint_06
         }
     }
     
@@ -182,12 +132,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     }
     
     private func show(quiz result: QuizResultsViewModel) {
-<<<<<<< HEAD
-        guard let statisticService = statisticService else { return }
-=======
         guard let statisticService else { return }
         
->>>>>>> sprint_06
         statisticService.store(correct: correctAnswers, total: questionsAmount)
         let bestGame = statisticService.bestGame
         let dateString = bestGame.date.dateTimeString
@@ -204,10 +150,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             buttonText: result.buttonText,
             completion: { [weak self] in
                 guard let self = self else { return }
-<<<<<<< HEAD
-=======
                 
->>>>>>> sprint_06
                 self.currentQuestionIndex = 0
                 self.correctAnswers = 0
                 self.questionFactory?.requestNextQuestion()
@@ -219,11 +162,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         yesButton.isEnabled = isEnabled
         noButton.isEnabled = isEnabled
     }
-<<<<<<< HEAD
-
-}
-
-=======
     
     private func showLoadingIndicator() {
         activityIndicator.isHidden = false
@@ -252,5 +190,4 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
 
 }
->>>>>>> sprint_06
 
