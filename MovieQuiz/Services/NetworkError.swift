@@ -5,6 +5,7 @@ enum NetworkError: LocalizedError {
     case noData
     case decoding(Error)
     case network(Error)
+    case imageDataCorrupted
     
     var errorDescription: String? {
         switch self {
@@ -16,6 +17,8 @@ enum NetworkError: LocalizedError {
             return "Ошибка при декодировании данных: \(error.localizedDescription)"
         case .network(let error):
             return "Сетевая ошибка: \(error.localizedDescription)"
+        case.imageDataCorrupted:
+            return "Не удалось загрузить изображение."
         }
     }
 }

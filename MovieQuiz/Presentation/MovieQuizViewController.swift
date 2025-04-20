@@ -50,7 +50,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         guard let question else { return }
         
         currentQuestion = question
-        let viewModel = convert(model: question)
+        guard let viewModel = convert(model: question) else { return }
         
         DispatchQueue.main.async { [weak self] in
             self?.show(quiz: viewModel)
@@ -88,9 +88,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         questionFactory?.requestNextQuestion()
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+    private func convert(model: QuizQuestion) -> QuizStepViewModel? {
+        guard let image = UIImage(data: model.image) else {
+            showNetworkError(message: NetworkError.imageDataCorrupted.errorDescription ?? "Неизвестная ошибка")
+            return nil
+        }
+        
         return QuizStepViewModel(
-            image: UIImage(data: model.image) ?? UIImage(),
+            image: image,
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)"
         )
