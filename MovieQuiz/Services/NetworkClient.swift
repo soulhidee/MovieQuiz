@@ -1,15 +1,11 @@
 import Foundation
 
 struct NetworkClient {
-    private enum NetworkError: Error {
-        case codeError
-    }
-    
     func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
         let request = URLRequest(url: url)
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                handler(.failure(error))
+                handler(.failure(NetworkError.network(error)))
                 return
             }
             
@@ -18,11 +14,15 @@ struct NetworkClient {
                 handler(.failure(NetworkError.codeError))
                 return
             }
-            
-            guard let data else { return }
+        
+            guard let data else {
+                handler(.failure(NetworkError.noData))
+                return
+            }
             
             handler(.success(data))
         }
+        
         task.resume()
     }
 }

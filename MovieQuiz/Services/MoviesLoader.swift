@@ -28,7 +28,7 @@ struct MoviesLoader: MoviesLoading {
             let model = try JSONDecoder().decode(T.self, from: data)
             return .success(model)
         } catch {
-            return .failure(error)
+            return .failure(NetworkError.decoding(error))
         }
     }
 }
