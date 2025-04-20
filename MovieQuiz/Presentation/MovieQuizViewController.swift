@@ -12,9 +12,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Properties
-    private var currentQuestionIndex = 0
-    private var correctAnswers = 0
-    private let questionsAmount: Int = 10
+    private var currentQuestionIndex: Int = .zero
+    private var correctAnswers: Int = .zero
+    private let questionsAmount = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenter?
@@ -121,7 +121,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.setAnswerButtonsState(isEnabled: true)
                 self.showNextQuestionOrResults()
-                self.imageView.layer.borderWidth = 0
+                self.imageView.layer.borderWidth = .zero
             }
         }
     }
@@ -161,8 +161,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             completion: { [weak self] in
                 guard let self = self else { return }
                 
-                self.currentQuestionIndex = 0
-                self.correctAnswers = 0
+                self.currentQuestionIndex = .zero
+                self.correctAnswers = .zero
                 self.questionFactory?.requestNextQuestion()
             })
         alertPresenter?.show(alert: alertModel)
@@ -192,8 +192,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 guard let self = self else { return }
                 
                 self.showLoadingIndicator()
-                self.currentQuestionIndex = 0
-                self.correctAnswers = 0
+                self.currentQuestionIndex = .zero
+                self.correctAnswers = .zero
                 self.questionFactory?.requestNextQuestion()
             }
         alertPresenter?.show(alert: model)
