@@ -20,25 +20,29 @@ class MovieQuizUITests: XCTestCase {
         app = nil
     }
     
-    func testScreenCast() throws {
-        let app = XCUIApplication()
-        app/*@START_MENU_TOKEN@*/.staticTexts["Нет"]/*[[".buttons[\"Нет\"].staticTexts.firstMatch",".buttons.staticTexts[\"Нет\"]",".staticTexts[\"Нет\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+    func testButtonAction(buttonTitle: String, expectedIndex: String) {
+        let firstPoster = app.images["Poster"]
+        XCTAssertTrue(firstPoster.waitForExistence(timeout: 5))
+        let firstPosterData = firstPoster.screenshot().pngRepresentation
         
-        let staticText = app/*@START_MENU_TOKEN@*/.staticTexts["Да"]/*[[".buttons[\"Да\"].staticTexts.firstMatch",".buttons.staticTexts[\"Да\"]",".staticTexts[\"Да\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-        staticText.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["Нет"]/*[[".buttons.containing(.staticText, identifier: \"Нет\").firstMatch",".otherElements.buttons[\"Нет\"]",".buttons[\"Нет\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-        staticText.tap()
+        app.buttons[buttonTitle].tap()
         
-        let element = app.otherElements/*@START_MENU_TOKEN@*/.containing(.button, identifier: "Нет").firstMatch/*[[".element(boundBy: 5)",".containing(.staticText, identifier: \"Нет\").firstMatch",".containing(.button, identifier: \"Да\").firstMatch",".containing(.button, identifier: \"Нет\").firstMatch"],[[[-1,3],[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
-        element.tap()
-        staticText.tap()
-        element.tap()
-        staticText.tap()
-        staticText.tap()
-        staticText.tap()
-        staticText.tap()
-        staticText.tap()
-        app/*@START_MENU_TOKEN@*/.buttons["Сыграть ещё раз"]/*[[".otherElements.buttons[\"Сыграть ещё раз\"]",".buttons.firstMatch",".buttons[\"Сыграть ещё раз\"]"],[[[-1,2],[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-                
+        let secondPoster = app.images["Poster"]
+        XCTAssertTrue(secondPoster.waitForExistence(timeout: 5))
+        let secondPosterData = secondPoster.screenshot().pngRepresentation
+        
+        let updatedIndexLabel = app.staticTexts["Index"]
+        XCTAssertTrue(updatedIndexLabel.waitForExistence(timeout: 5))
+        XCTAssertEqual(updatedIndexLabel.label, expectedIndex)
+        
+        XCTAssertNotEqual(firstPosterData, secondPosterData)
+    }
+
+    func testYesButton() {
+        testButtonAction(buttonTitle: "Yes", expectedIndex: "2/10")
+    }
+
+    func testNoButton() {
+        testButtonAction(buttonTitle: "No", expectedIndex: "2/10")
     }
 }
