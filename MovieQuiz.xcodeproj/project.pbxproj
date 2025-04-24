@@ -76,17 +76,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8667B4F12DBA3B2C00C52206 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		8667B4F52DBA415E00C52206 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				MovieQuizTests.swift,
+				ArrayTests.swift,
+				MoviesLoaderTests.swift,
 			);
 			target = 8667B4D92DBA314500C52206 /* MovieQuizTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		8667B4E82DBA321900C52206 /* MovieQuizTest */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8667B4F12DBA3B2C00C52206 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MovieQuizTest; sourceTree = "<group>"; };
+		8667B4E82DBA321900C52206 /* MovieQuizTest */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8667B4F52DBA415E00C52206 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MovieQuizTest; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
