@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, MovieQuizViewControllerProtocol {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     
     // MARK: - Outlets
     @IBOutlet private weak var noButton: UIButton!
@@ -86,7 +86,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     
     func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
-            presenter.correctAnswers += 1
+            presenter.didAnswer(isCorrectAnswer: true)
         }
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
@@ -123,8 +123,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             completion: { [weak self] in
                 guard let self else { return }
                 
-                self.presenter.resetQuestionIndex()
-                self.presenter.correctAnswers = .zero
+                self.presenter.restartGame()
                 self.questionFactory?.requestNextQuestion()
             })
         alertPresenter?.show(alert: alertModel)
@@ -155,8 +154,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             guard let self else { return }
             
             self.showLoadingIndicator()
-            self.presenter.resetQuestionIndex()
-            self.presenter.correctAnswers = .zero
+            self.presenter.restartGame()
             self.questionFactory?.requestNextQuestion()
         }
         alertPresenter?.show(alert: model)
