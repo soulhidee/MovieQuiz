@@ -19,7 +19,7 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        presenter = MovieQuizPresenter(viewController: self) // Инициализация презентера
+        presenter = MovieQuizDIContainer.makePresenter(viewController: self)
         presenter.loadInitialData()
         alertPresenter = AlertPresenter(presentingController: self)
     }

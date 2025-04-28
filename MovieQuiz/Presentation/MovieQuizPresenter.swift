@@ -8,26 +8,17 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     var correctAnswers: Int = .zero
     weak var viewController: MovieQuizViewController?
     let questionsAmount = 10
-    private var alertPresenter: AlertPresenter?
     private var isAnsweringNow = false
     
     // MARK: - Initializer
     init(viewController: MovieQuizViewController,
          statisticService: StatisticServiceProtocol,
-         questionFactory: QuestionFactoryProtocol,
-         alertPresenter: AlertPresenter) {
+         questionFactory: QuestionFactoryProtocol) {
         self.viewController = viewController
         self.statisticService = statisticService
         self.questionFactory = questionFactory
-        self.alertPresenter = alertPresenter
     }
     
-    // MARK: - Configure services
-    func configureServices() {
-        questionFactory = QuestionFactory(moviesLoder: MoviesLoader(), delegate: self)
-        alertPresenter = AlertPresenter(presentingController: self.viewController!)
-        statisticService = StatisticService()
-    }
     
     // MARK: - Data loading
     func loadInitialData() {
