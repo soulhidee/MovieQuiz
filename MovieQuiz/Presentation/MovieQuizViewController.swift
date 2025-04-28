@@ -54,8 +54,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     }
     
     private func loadInitialData() {
-        questionFactory?.loadData()
-        questionFactory?.requestNextQuestion()
+        presenter.loadInitialData()
     }
     
     
@@ -66,26 +65,15 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         counterLabel.text = step.questionNumber
     }
     
-    func showAnswerResult(isCorrect: Bool) {
-        if isCorrect {
-            presenter.didAnswer(isCorrectAnswer: true)
-        }
+    func highlightImageBorder(isCorrectAnswer: Bool) {
         imageView.layer.borderWidth = 8
-        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self else { return }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.setAnswerButtonsState(isEnabled: true)
-                self.presenter.showNextQuestionOrResults()
-                self.imageView.layer.borderWidth = .zero
-            }
-        }
+        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+
     }
     
     
     
-    private func show(quiz result: QuizResultsViewModel) {
+    func show(quiz result: QuizResultsViewModel) {
         let message = presenter.makeResultsMessage()
         let alertModel = AlertModel(
             title: result.title,
