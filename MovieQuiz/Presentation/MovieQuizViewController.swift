@@ -35,7 +35,7 @@ final class MovieQuizViewController: UIViewController {
 
     // MARK: - Private Methods
     private func configureUI() {
-        showLoadingIndicator()
+        setLoadingState(isLoading: true)
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 20
     }
@@ -72,24 +72,19 @@ final class MovieQuizViewController: UIViewController {
         noButton.isEnabled = isEnabled
     }
 
-    func showLoadingIndicator() {
-        activityIndicator.isHidden = false
-        activityIndicator.startAnimating()
-    }
-
-    func hideLoadingIndicator() {
-        activityIndicator.isHidden = true
-        activityIndicator.stopAnimating()
+    func setLoadingState(isLoading: Bool) {
+        activityIndicator.isHidden = !isLoading
+        isLoading ? activityIndicator.startAnimating() : activityIndicator.stopAnimating()
     }
 
     func showNetworkError(message: String) {
-        hideLoadingIndicator()
+        setLoadingState(isLoading: false)
         let model = AlertModel(
             title: "Ошибка",
             message: message,
             buttonText: "Попробовать ещё раз"
         ) { [weak self] in
-            self?.showLoadingIndicator()
+            self?.setLoadingState(isLoading: true)
             self?.presenter.restartGame()
         }
         alertPresenter?.show(alert: model)

@@ -28,14 +28,14 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     func didLoadDataFromServer() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.viewController?.showLoadingIndicator()
+            self.viewController?.setLoadingState(isLoading: true)
             self.questionFactory?.requestNextQuestion()
         }
     }
     
     func didFailToLoadData(with error: Error) {
         if let networkError = error as? NetworkError {
-            viewController?.hideLoadingIndicator()
+            viewController?.setLoadingState(isLoading: false)
             viewController?.showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
         }
     }
@@ -48,7 +48,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         guard let viewModel = convert(model: question) else { return }
         
         DispatchQueue.main.async { [weak self] in
-            self?.viewController?.hideLoadingIndicator()
+            self?.viewController?.setLoadingState(isLoading: false)
             self?.viewController?.show(quiz: viewModel)
         }
     }
@@ -122,7 +122,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         } else {
             // Переходим к следующему вопросу
             switchToNextQuestion()
-            viewController?.showLoadingIndicator()
+            viewController?.setLoadingState(isLoading: true)
             questionFactory?.requestNextQuestion()
         }
     }
