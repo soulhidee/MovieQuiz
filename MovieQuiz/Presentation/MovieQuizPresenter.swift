@@ -1,16 +1,24 @@
 import UIKit
 
+// MARK: - MovieQuizPresenter
+
 final class MovieQuizPresenter: QuestionFactoryDelegate {
+    
+    // MARK: - Properties
+    
     private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticServiceProtocol!
     private var currentQuestionIndex: Int = .zero
+    private var isAnsweringNow = false
+    private let questionsAmount = 10
+    
     var currentQuestion: QuizQuestion?
     var correctAnswers: Int = .zero
+    
     weak var viewController: MovieQuizViewController?
-    let questionsAmount = 10
-    private var isAnsweringNow = false
     
     // MARK: - Initializer
+    
     init(viewController: MovieQuizViewController,
          statisticService: StatisticServiceProtocol,
          questionFactory: QuestionFactoryProtocol) {
@@ -19,8 +27,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         self.questionFactory = questionFactory
     }
     
+    // MARK: - Data Loading
     
-    // MARK: - Data loading
     func loadInitialData() {
         print("Start loading initial data")
         questionFactory?.loadData()
@@ -42,7 +50,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    // MARK: - Question handling
+    // MARK: - Question Handling
+    
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
         currentQuestion = question
@@ -55,7 +64,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    func convert(model: QuizQuestion) -> QuizStepViewModel? {
+    private func convert(model: QuizQuestion) -> QuizStepViewModel? {
         guard let image = UIImage(data: model.image) else {
             viewController?.showNetworkError(message: NetworkError.imageDataCorrupted.localizedDescription)
             return nil
@@ -68,50 +77,55 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         )
     }
     
-    // MARK: - Answer handling
-    func didAnswer(isCorrectAnswer: Bool) {
-        if isCorrectAnswer {
-            correctAnswers += 1
-        }
+    func requestNextQuestion() {
+        questionFactory?.requestNextQuestion()
     }
     
-    func didAnswer(isYes: Bool) {
-        guard !isAnsweringNow else { return }
-        isAnsweringNow = true
-        viewController?.setAnswerButtonsState(isEnabled: false)
-        guard let currentQuestion = currentQuestion else { return }
-        
-        let givenAnswer = isYes
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    // MARK: - Answer Handling
+    
+    func yesButtonClicked() {
+        didAnswer(isYes: true)
     }
     
     func noButtonClicked() {
         didAnswer(isYes: false)
     }
     
-    func yesButtonClicked() {
-        didAnswer(isYes: true)
+    private func didAnswer(isYes: Bool) {
+        guard !isAnsweringNow else { return }
+        isAnsweringNow = true
+        viewController?.setAnswerButtonsState(isEnabled: false)
+        
+        guard let currentQuestion = currentQuestion else { return }
+        let givenAnswer = isYes
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
-    // MARK: - Answer result display
-    func showAnswerResult(isCorrect: Bool) {
+    private func didAnswer(isCorrectAnswer: Bool) {
+        if isCorrectAnswer {
+            correctAnswers += 1
+        }
+    }
+    
+    private func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             didAnswer(isCorrectAnswer: true)
         }
         
-        self.viewController?.highlightImageBorder(isCorrectAnswer: isCorrect) // СРАЗУ показать рамку!
+        viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             
-            self.isAnsweringNow = false 
+            self.isAnsweringNow = false
             self.viewController?.setAnswerButtonsState(isEnabled: true)
             self.showNextQuestionOrResults()
         }
     }
     
-    // MARK: - Next question or results
-    func showNextQuestionOrResults() {
+    // MARK: - Next Question or Results
+    
+    private func showNextQuestionOrResults() {
         if isLastQuestion() {
             let result = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
@@ -127,11 +141,12 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Helpers
-    func isLastQuestion() -> Bool {
+    
+    private func isLastQuestion() -> Bool {
         return currentQuestionIndex == questionsAmount - 1
     }
     
-    func switchToNextQuestion() {
+    private func switchToNextQuestion() {
         currentQuestionIndex += 1
     }
     
@@ -152,15 +167,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         let bestGameInfoLine = "Рекорд: \(bestGame.correct)/\(bestGame.total) (\(dateString))"
         let averageAccuracyLine = "Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
         
-        let resultMessage = [
-            currentGameResultLine, totalPlaysCountLine, bestGameInfoLine, averageAccuracyLine
+        return [
+            currentGameResultLine,
+            totalPlaysCountLine,
+            bestGameInfoLine,
+            averageAccuracyLine
         ].joined(separator: "\n")
-        
-        return resultMessage
     }
-    
-    func requestNextQuestion() {
-        questionFactory?.requestNextQuestion()
-    }
-    
 }
