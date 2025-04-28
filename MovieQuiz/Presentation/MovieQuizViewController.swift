@@ -20,11 +20,7 @@ final class MovieQuizViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         presenter = MovieQuizPresenter(viewController: self) // Инициализация презентера
-        presenter.showNetworkError = { [weak self] message in
-            self?.showNetworkError(message: message)
-        }
-        
-        loadInitialData()
+        presenter.loadInitialData()
         alertPresenter = AlertPresenter(presentingController: self)
     }
 
@@ -44,20 +40,16 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.cornerRadius = 20
     }
     
-    private func loadInitialData() {
-        presenter.loadInitialData()
-    }
 
     func show(quiz step: QuizStepViewModel) {
+        imageView.layer.borderWidth = 0
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
     }
     
     
-    
     func highlightImageBorder(isCorrectAnswer: Bool) {
-        
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
     }
