@@ -3,6 +3,9 @@ import UIKit
 final class MovieQuizPresenter {
     
     private var currentQuestionIndex: Int = .zero
+    var currentQuestion: QuizQuestion?
+    
+    weak var viewController: MovieQuizViewController?
     let questionsAmount = 10
     var showNetworkError: ((String) -> Void)?
     
@@ -30,6 +33,34 @@ final class MovieQuizPresenter {
     
     func switchToNextQuestion() {
         currentQuestionIndex += 1
+    }
+    
+    private func didAnswer(isYes: Bool) {
+        viewController?.setAnswerButtonsState(isEnabled: false)
+        guard let currentQuestion else { return }
+        
+        let givenAnswer = isYes
+        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+    }
+    
+   func noButtonClicked() {
+       didAnswer(isYes: false)
+    }
+    
+    func yesButtonClicked() {
+        didAnswer(isYes: false)
+    }
+    
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question else { return }
+        
+        currentQuestion = question
+        guard let viewModel = convert(model: question) else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.viewController?.hideLoadingIndicator()
+            self?.viewController?.show(quiz: viewModel)
+        }
     }
     
 }
