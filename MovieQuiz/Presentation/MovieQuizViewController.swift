@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, MovieQuizViewControllerProtocol {
     
     // MARK: - Outlets
     @IBOutlet private weak var noButton: UIButton!
@@ -11,7 +11,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Properties
-    private var correctAnswers: Int = .zero
+
     private let presenter = MovieQuizPresenter()
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter: AlertPresenter?
@@ -86,7 +86,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     
     func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
-            correctAnswers += 1
+            presenter.correctAnswers += 1
         }
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
@@ -95,35 +95,22 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.setAnswerButtonsState(isEnabled: true)
-                self.showNextQuestionOrResults()
+                self.presenter.showNextQuestionOrResults()
                 self.imageView.layer.borderWidth = .zero
             }
         }
     }
     
-    private func showNextQuestionOrResults() {
-        if presenter.isLastQuestion() {
-            let result = QuizResultsViewModel(
-                title: "Этот раунд окончен!",
-                text: "Ваш результат: \(correctAnswers)/\(presenter.questionsAmount)",
-                buttonText: "Сыграть ещё раз"
-            )
-            show(quiz: result)
-        } else {
-            presenter.switchToNextQuestion()
-            showLoadingIndicator()
-            questionFactory?.requestNextQuestion()
-        }
-    }
+   
     
     private func show(quiz result: QuizResultsViewModel) {
         guard let statisticService else { return }
         
-        statisticService.store(correct: correctAnswers, total: presenter.questionsAmount)
+        statisticService.store(correct: presenter.correctAnswers, total: presenter.questionsAmount)
         let bestGame = statisticService.bestGame
         let dateString = bestGame.date.dateTimeString
         let message = """
-            Ваш результат: \(correctAnswers)/\(presenter.questionsAmount)
+            Ваш результат: \(presenter.correctAnswers)/\(presenter.questionsAmount)
             Количество сыгранных квизов: \(statisticService.gamesCount)
             Рекорд: \(bestGame.correct)/\(bestGame.total) (\(dateString))
             Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
@@ -137,7 +124,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
                 guard let self else { return }
                 
                 self.presenter.resetQuestionIndex()
-                self.correctAnswers = .zero
+                self.presenter.correctAnswers = .zero
                 self.questionFactory?.requestNextQuestion()
             })
         alertPresenter?.show(alert: alertModel)
@@ -148,7 +135,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
         noButton.isEnabled = isEnabled
     }
     
-    private func showLoadingIndicator() {
+    func showLoadingIndicator() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
@@ -169,7 +156,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
             
             self.showLoadingIndicator()
             self.presenter.resetQuestionIndex()
-            self.correctAnswers = .zero
+            self.presenter.correctAnswers = .zero
             self.questionFactory?.requestNextQuestion()
         }
         alertPresenter?.show(alert: model)

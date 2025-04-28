@@ -4,7 +4,7 @@ final class MovieQuizPresenter {
     
     private var currentQuestionIndex: Int = .zero
     var currentQuestion: QuizQuestion?
-    
+    var correctAnswers: Int = .zero
     weak var viewController: MovieQuizViewController?
     let questionsAmount = 10
     var showNetworkError: ((String) -> Void)?
@@ -63,4 +63,18 @@ final class MovieQuizPresenter {
         }
     }
     
+    func showNextQuestionOrResults() {
+        if self.isLastQuestion() {
+            let result = QuizResultsViewModel(
+                title: "Этот раунд окончен!",
+                text: "Ваш результат: \(correctAnswers)/\(questionsAmount)",
+                buttonText: "Сыграть ещё раз"
+            )
+            viewController?.show(quiz: result)
+        } else {
+            self.switchToNextQuestion()
+            viewController?.showLoadingIndicator()
+            questionFactory?.requestNextQuestion()
+        }
+    }
 }
