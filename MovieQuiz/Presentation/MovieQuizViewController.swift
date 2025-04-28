@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
+final class MovieQuizViewController: UIViewController {
     
     // MARK: - Outlets
     @IBOutlet private weak var noButton: UIButton!
@@ -11,35 +11,32 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Properties
+     var presenter: MovieQuizPresenter!
+     var alertPresenter: AlertPresenter?
     
-    private var presenter: MovieQuizPresenter!
-    private var alertPresenter: AlertPresenter?
-    
-    
-    
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        configureServices()
-        loadInitialData()
+        presenter = MovieQuizPresenter(viewController: self) // Инициализация презентера
         presenter.showNetworkError = { [weak self] message in
             self?.showNetworkError(message: message)
         }
-        presenter = MovieQuizPresenter(viewController: self)
+        
+        loadInitialData()
+        alertPresenter = AlertPresenter(presentingController: self)
     }
-    
+
     // MARK: - Actions
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         presenter.noButtonClicked()
     }
-    
+
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
         presenter.yesButtonClicked()
     }
-    
-    
-    
+
     // MARK: - Private Methods
     private func configureUI() {
         showLoadingIndicator()
@@ -47,32 +44,25 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         imageView.layer.cornerRadius = 20
     }
     
-    private func configureServices() {
-        questionFactory = QuestionFactory(moviesLoder: MoviesLoader(), delegate: self)
-        alertPresenter = AlertPresenter(presentingController: self)
-        statisticService = StatisticService()
-    }
-    
     private func loadInitialData() {
         presenter.loadInitialData()
     }
-    
-    
-    
-    private func show(quiz step: QuizStepViewModel) {
+
+    func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
     }
     
+    
+    
     func highlightImageBorder(isCorrectAnswer: Bool) {
+        
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-
     }
     
-    
-    
+
     func show(quiz result: QuizResultsViewModel) {
         let message = presenter.makeResultsMessage()
         let alertModel = AlertModel(
@@ -80,28 +70,26 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             message: message,
             buttonText: result.buttonText,
             completion: { [weak self] in
-                guard let self else { return }
-                
-                self.presenter.restartGame()
+                self?.presenter.restartGame()
             })
         alertPresenter?.show(alert: alertModel)
     }
-    
+
     func setAnswerButtonsState(isEnabled: Bool) {
         yesButton.isEnabled = isEnabled
         noButton.isEnabled = isEnabled
     }
-    
+
     func showLoadingIndicator() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
-    
+
     func hideLoadingIndicator() {
         activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
     }
-    
+
     func showNetworkError(message: String) {
         hideLoadingIndicator()
         let model = AlertModel(
@@ -109,12 +97,9 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             message: message,
             buttonText: "Попробовать ещё раз"
         ) { [weak self] in
-            guard let self else { return }
-            
-            self.showLoadingIndicator()
-            self.presenter.restartGame()
+            self?.showLoadingIndicator()
+            self?.presenter.restartGame()
         }
         alertPresenter?.show(alert: model)
     }
 }
-

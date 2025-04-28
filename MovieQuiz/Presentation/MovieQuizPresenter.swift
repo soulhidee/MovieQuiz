@@ -18,6 +18,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         questionFactory = QuestionFactory(moviesLoder: MoviesLoader(), delegate: self)
         questionFactory?.loadData()
         viewController.showLoadingIndicator()
+        alertPresenter = AlertPresenter(presentingController: viewController)
     }
 
     // MARK: - Configure services
@@ -51,11 +52,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
         currentQuestion = question
-        
+
         guard let viewModel = convert(model: question) else { return }
 
         DispatchQueue.main.async { [weak self] in
-            self?.viewController?.hideLoadingIndicator()
+            self?.viewController?.showLoadingIndicator()
             self?.viewController?.show(quiz: viewModel)
         }
     }
@@ -80,12 +81,12 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
 
-    private func didAnswer(isYes: Bool) {
+    func didAnswer(isYes: Bool) {
         viewController?.setAnswerButtonsState(isEnabled: false)
         guard let currentQuestion = currentQuestion else { return }
 
         let givenAnswer = isYes
-        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
 
     func noButtonClicked() {
@@ -116,13 +117,16 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     // MARK: - Next question or results
     func showNextQuestionOrResults() {
         if isLastQuestion() {
+            // Создаём результаты для отображения в конце
             let result = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
                 text: "Ваш результат: \(correctAnswers)/\(questionsAmount)",
                 buttonText: "Сыграть ещё раз"
             )
-            viewController?.show(quiz: result)
+            // Показываем результаты
+            viewController?.show(quiz: result) // Здесь передается результат, а не шаг
         } else {
+            // Переходим к следующему вопросу
             switchToNextQuestion()
             viewController?.showLoadingIndicator()
             questionFactory?.requestNextQuestion()
@@ -161,4 +165,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
 
         return resultMessage
     }
+    
+    
 }
