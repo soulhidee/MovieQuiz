@@ -11,10 +11,10 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     // MARK: - Properties
-
+    
     private var presenter: MovieQuizPresenter!
     private var alertPresenter: AlertPresenter?
-    private var statisticService: StatisticServiceProtocol?
+    
     
     
     // MARK: - Lifecycle
@@ -38,24 +38,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         presenter.yesButtonClicked()
     }
     
-    // MARK: - QuestionFactoryDelegate
-//    func didReceiveNextQuestion(question: QuizQuestion?) {
-//          presenter.didReceiveNextQuestion(question: question)
-//      }
-//    
-//    func didLoadDataFromServer() {
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//            self.showLoadingIndicator()
-//            self.questionFactory?.requestNextQuestion()
-//        }
-//    }
-//    
-//    func didFailToLoadData(with error: Error) {
-//        if let networkError = error as? NetworkError {
-//            hideLoadingIndicator()
-//            showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
-//        }
-//    }
+    
     
     // MARK: - Private Methods
     private func configureUI() {
@@ -100,21 +83,10 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         }
     }
     
-   
+    
     
     private func show(quiz result: QuizResultsViewModel) {
-        guard let statisticService else { return }
-        
-        statisticService.store(correct: presenter.correctAnswers, total: presenter.questionsAmount)
-        let bestGame = statisticService.bestGame
-        let dateString = bestGame.date.dateTimeString
-        let message = """
-            Ваш результат: \(presenter.correctAnswers)/\(presenter.questionsAmount)
-            Количество сыгранных квизов: \(statisticService.gamesCount)
-            Рекорд: \(bestGame.correct)/\(bestGame.total) (\(dateString))
-            Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
-            """
-        
+        let message = presenter.makeResultsMessage()
         let alertModel = AlertModel(
             title: result.title,
             message: message,
@@ -123,7 +95,6 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
                 guard let self else { return }
                 
                 self.presenter.restartGame()
-//                self.questionFactory?.requestNextQuestion()
             })
         alertPresenter?.show(alert: alertModel)
     }
@@ -154,7 +125,6 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             
             self.showLoadingIndicator()
             self.presenter.restartGame()
-//            self.questionFactory?.requestNextQuestion()
         }
         alertPresenter?.show(alert: model)
     }

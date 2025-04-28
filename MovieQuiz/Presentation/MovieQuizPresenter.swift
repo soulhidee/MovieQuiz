@@ -2,19 +2,21 @@ import UIKit
 
 final class MovieQuizPresenter: QuestionFactoryDelegate {
     private var questionFactory: QuestionFactoryProtocol?
+    private let statisticService: StatisticServiceProtocol!
     private var currentQuestionIndex: Int = .zero
     var currentQuestion: QuizQuestion?
     var correctAnswers: Int = .zero
     weak var viewController: MovieQuizViewController?
     let questionsAmount = 10
     var showNetworkError: ((String) -> Void)?
-   
+    
     init(viewController: MovieQuizViewController) {
-           self.viewController = viewController
-           questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
-           questionFactory?.loadData()
-           viewController.showLoadingIndicator()
-       }
+        self.viewController = viewController
+        statisticService = StatisticService()
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        questionFactory?.loadData()
+        viewController.showLoadingIndicator()
+    }
     
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question else { return }
@@ -28,19 +30,19 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-        func didLoadDataFromServer() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.viewController?.showLoadingIndicator()
-                self.questionFactory?.requestNextQuestion()
-            }
+    func didLoadDataFromServer() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.viewController?.showLoadingIndicator()
+            self.questionFactory?.requestNextQuestion()
         }
+    }
     
-        func didFailToLoadData(with error: Error) {
-            if let networkError = error as? NetworkError {
-                viewController?.hideLoadingIndicator()
-                viewController?.showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
-            }
+    func didFailToLoadData(with error: Error) {
+        if let networkError = error as? NetworkError {
+            viewController?.hideLoadingIndicator()
+            viewController?.showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
         }
+    }
     
     func convert(model: QuizQuestion) -> QuizStepViewModel? {
         guard let image = UIImage(data: model.image) else {
@@ -55,16 +57,16 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         )
     }
     
-
+    
     func isLastQuestion() -> Bool {
         currentQuestionIndex == questionsAmount - 1
     }
     
     func didAnswer(isCorrectAnswer: Bool) {
-            if isCorrectAnswer {
-                correctAnswers += 1
-            }
+        if isCorrectAnswer {
+            correctAnswers += 1
         }
+    }
     
     func restartGame() {
         currentQuestionIndex = .zero
@@ -84,15 +86,15 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
-   func noButtonClicked() {
-       didAnswer(isYes: false)
+    func noButtonClicked() {
+        didAnswer(isYes: false)
     }
     
     func yesButtonClicked() {
         didAnswer(isYes: false)
     }
     
-   
+    
     
     func showNextQuestionOrResults() {
         if self.isLastQuestion() {
@@ -107,5 +109,25 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             viewController?.showLoadingIndicator()
             questionFactory?.requestNextQuestion()
         }
+    }
+    
+    
+    func makeResultsMessage() -> String {
+        statisticService.store(correct: correctAnswers, total: questionsAmount)
+        
+        let bestGame = statisticService.bestGame
+        let dateString = bestGame.date.dateTimeString
+        
+        let totalPlaysCountLine = "Количество сыгранных квизов: \(statisticService.gamesCount)"
+        let currentGameResultLine = "Ваш результат: \(correctAnswers)/\(questionsAmount)"
+        let bestGameInfoLine = "Рекорд: \(bestGame.correct)/\(bestGame.total) (\(dateString))"
+        let averageAccuracyLine = "Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
+        
+        // Объединяем все строки в одну
+        let resultMessage = [
+            currentGameResultLine, totalPlaysCountLine, bestGameInfoLine, averageAccuracyLine
+        ].joined(separator: "\n")
+        
+        return resultMessage
     }
 }
