@@ -23,13 +23,13 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     // MARK: - Data loading
     func loadInitialData() {
         questionFactory?.loadData()
-        questionFactory?.requestNextQuestion()
+        requestNextQuestion()
     }
     
     func didLoadDataFromServer() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.viewController?.setLoadingState(isLoading: true)
-            self.questionFactory?.requestNextQuestion()
+            self.requestNextQuestion()
         }
     }
     
@@ -111,19 +111,16 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     // MARK: - Next question or results
     func showNextQuestionOrResults() {
         if isLastQuestion() {
-            // Создаём результаты для отображения в конце
             let result = QuizResultsViewModel(
                 title: "Этот раунд окончен!",
                 text: "Ваш результат: \(correctAnswers)/\(questionsAmount)",
                 buttonText: "Сыграть ещё раз"
             )
-            // Показываем результаты
-            viewController?.show(quiz: result) // Здесь передается результат, а не шаг
+            viewController?.show(quiz: result)
         } else {
-            // Переходим к следующему вопросу
             switchToNextQuestion()
             viewController?.setLoadingState(isLoading: true)
-            questionFactory?.requestNextQuestion()
+            requestNextQuestion()
         }
     }
     
@@ -139,7 +136,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     func restartGame() {
         currentQuestionIndex = .zero
         correctAnswers = .zero
-        questionFactory?.requestNextQuestion()
+        requestNextQuestion()
     }
     
     func makeResultsMessage() -> String {
@@ -160,5 +157,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         return resultMessage
     }
     
+    func requestNextQuestion() {
+        questionFactory?.requestNextQuestion()
+    }
     
 }
