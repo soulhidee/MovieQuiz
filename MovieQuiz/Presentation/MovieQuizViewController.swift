@@ -12,8 +12,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     
     // MARK: - Properties
 
-    private let presenter = MovieQuizPresenter()
-    private var questionFactory: QuestionFactoryProtocol?
+    private var presenter: MovieQuizPresenter!
     private var alertPresenter: AlertPresenter?
     private var statisticService: StatisticServiceProtocol?
     
@@ -27,7 +26,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         presenter.showNetworkError = { [weak self] message in
             self?.showNetworkError(message: message)
         }
-        presenter.viewController = self
+        presenter = MovieQuizPresenter(viewController: self)
     }
     
     // MARK: - Actions
@@ -40,23 +39,23 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     }
     
     // MARK: - QuestionFactoryDelegate
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-          presenter.didReceiveNextQuestion(question: question)
-      }
-    
-    func didLoadDataFromServer() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.showLoadingIndicator()
-            self.questionFactory?.requestNextQuestion()
-        }
-    }
-    
-    func didFailToLoadData(with error: Error) {
-        if let networkError = error as? NetworkError {
-            hideLoadingIndicator()
-            showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
-        }
-    }
+//    func didReceiveNextQuestion(question: QuizQuestion?) {
+//          presenter.didReceiveNextQuestion(question: question)
+//      }
+//    
+//    func didLoadDataFromServer() {
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//            self.showLoadingIndicator()
+//            self.questionFactory?.requestNextQuestion()
+//        }
+//    }
+//    
+//    func didFailToLoadData(with error: Error) {
+//        if let networkError = error as? NetworkError {
+//            hideLoadingIndicator()
+//            showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
+//        }
+//    }
     
     // MARK: - Private Methods
     private func configureUI() {
@@ -124,7 +123,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
                 guard let self else { return }
                 
                 self.presenter.restartGame()
-                self.questionFactory?.requestNextQuestion()
+//                self.questionFactory?.requestNextQuestion()
             })
         alertPresenter?.show(alert: alertModel)
     }
@@ -144,7 +143,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
         activityIndicator.stopAnimating()
     }
     
-    private func showNetworkError(message: String) {
+    func showNetworkError(message: String) {
         hideLoadingIndicator()
         let model = AlertModel(
             title: "Ошибка",
@@ -155,7 +154,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
             
             self.showLoadingIndicator()
             self.presenter.restartGame()
-            self.questionFactory?.requestNextQuestion()
+//            self.questionFactory?.requestNextQuestion()
         }
         alertPresenter?.show(alert: model)
     }
