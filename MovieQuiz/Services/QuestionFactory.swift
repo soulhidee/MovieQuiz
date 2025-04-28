@@ -2,7 +2,7 @@ import Foundation
 
 final class QuestionFactory: QuestionFactoryProtocol {
     private let moviesLoder: MoviesLoading
-    private weak var delegate: QuestionFactoryDelegate?
+    weak var delegate: QuestionFactoryDelegate?
     private var movies: [Movie] = []
     private var shuffledMovies: [Movie] = []
     private var currentIndex: Int = .zero
