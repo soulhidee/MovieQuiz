@@ -15,11 +15,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     var currentQuestion: QuizQuestion?
     var correctAnswers: Int = .zero
     
-    weak var viewController: MovieQuizViewController?
+    weak var viewController: MovieQuizViewControllerProtocol?
     
     // MARK: - Initializer
     
-    init(viewController: MovieQuizViewController,
+    init(viewController: MovieQuizViewControllerProtocol,
          statisticService: StatisticServiceProtocol,
          questionFactory: QuestionFactoryProtocol) {
         self.viewController = viewController
@@ -61,7 +61,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel? {
+    func convert(model: QuizQuestion) -> QuizStepViewModel? {
         guard let image = UIImage(data: model.image) else {
             viewController?.showNetworkError(message: NetworkError.imageDataCorrupted.localizedDescription)
             return nil
