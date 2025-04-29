@@ -13,6 +13,9 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     var showNetworkErrorMassage: String?
     var showNetworkErrorHandler: ((String) -> Void)?
     
+    var setAnswerButtonsHandler: ((Bool) -> Void)?
+
+    
     func show(quiz step: MovieQuiz.QuizStepViewModel) {
         
     }
@@ -26,7 +29,7 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     }
     
     func setAnswerButtonsState(isEnabled: Bool) {
-        
+        setAnswerButtonsHandler?(isEnabled)
     }
     
     func setLoadingState(isLoading: Bool) {
@@ -185,16 +188,52 @@ final class MovieQuizPresenterTests: XCTestCase {
     
     func testRequestNextQuestion() throws {
         
-        let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
+        let expectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
         questionFactoryStub.requestNextQuestionHandler = {
-            requestNextQuestionExpectation.fulfill()
+            expectation.fulfill()
         }
         
         sut.requestNextQuestion()
         
-        wait(for: [requestNextQuestionExpectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0)
         XCTAssertTrue(questionFactoryStub.requestNextQuestionCalled, "Должен быть вызван requestNextQuestion" )
         
+    }
+    
+    
+    
+    
+    func testYesClickDisablesButtons() throws {
+        let question = QuizQuestion(image: Data(), text: "Test", correctAnswer: true)
+        sut.currentQuestion = question
+        
+        let expectation = self.expectation(description: "Кнопки должны быть отключены")
+        
+        viewControllerMock.setAnswerButtonsHandler = { isEnabled in
+            XCTAssertFalse(isEnabled)
+            expectation.fulfill()
+        }
+        
+        sut.yesButtonClicked()
+        
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    func testNoClickDisablesButtons() throws {
+        let question = QuizQuestion(image: Data(), text: "Test", correctAnswer: false)
+        sut.currentQuestion = question
+        
+        let expectation = self.expectation(description: "Кнопки должны быть отключены")
+        
+        viewControllerMock.setAnswerButtonsHandler = { isEnabled in
+            XCTAssertFalse(isEnabled)
+            expectation.fulfill()
+        }
+        
+        sut.noButtonClicked()
+        
+        wait(for: [expectation], timeout: 1.0)
     }
 }
