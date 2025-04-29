@@ -158,6 +158,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     func restartGame() {
         currentQuestionIndex = .zero
         correctAnswers = .zero
+        viewController?.setLoadingState(isLoading: true)
         requestNextQuestion()
     }
     
