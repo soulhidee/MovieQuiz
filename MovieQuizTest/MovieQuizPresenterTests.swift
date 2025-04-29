@@ -186,8 +186,7 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertTrue(viewControllerMock.showNetworkErrorCalled, "Должен быть вызван showNetworkError")
     }
     
-    func testRequestNextQuestion() throws {
-        
+   func testRequestNextQuestion() throws {
         let expectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
         questionFactoryStub.requestNextQuestionHandler = {
@@ -201,11 +200,8 @@ final class MovieQuizPresenterTests: XCTestCase {
         
     }
     
-    
-    
-    
-    func testYesClickDisablesButtons() throws {
-        let question = QuizQuestion(image: Data(), text: "Test", correctAnswer: true)
+    func clickDisablesButtons(correctAnswer: Bool, clickAction: () -> Void) {
+        let question = QuizQuestion(image: Data(), text: "Test", correctAnswer: correctAnswer)
         sut.currentQuestion = question
         
         let expectation = self.expectation(description: "Кнопки должны быть отключены")
@@ -215,25 +211,22 @@ final class MovieQuizPresenterTests: XCTestCase {
             expectation.fulfill()
         }
         
-        sut.yesButtonClicked()
+        clickAction()
         
         wait(for: [expectation], timeout: 1.0)
     }
     
     
+    func testYesClickDisablesButtons() throws {
+        clickDisablesButtons(correctAnswer: true) {
+               sut.yesButtonClicked()
+           }
+    }
+    
+    
     func testNoClickDisablesButtons() throws {
-        let question = QuizQuestion(image: Data(), text: "Test", correctAnswer: false)
-        sut.currentQuestion = question
-        
-        let expectation = self.expectation(description: "Кнопки должны быть отключены")
-        
-        viewControllerMock.setAnswerButtonsHandler = { isEnabled in
-            XCTAssertFalse(isEnabled)
-            expectation.fulfill()
+        clickDisablesButtons(correctAnswer: false) {
+            sut.noButtonClicked()
         }
-        
-        sut.noButtonClicked()
-        
-        wait(for: [expectation], timeout: 1.0)
     }
 }
