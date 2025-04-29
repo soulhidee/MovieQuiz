@@ -182,4 +182,19 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertTrue(viewControllerMock.setLoadingStateCalled, "Должен быть вызван setLoadingState")
         XCTAssertTrue(viewControllerMock.showNetworkErrorCalled, "Должен быть вызван showNetworkError")
     }
+    
+    func testRequestNextQuestion() throws {
+        
+        let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
+        
+        questionFactoryStub.requestNextQuestionHandler = {
+            requestNextQuestionExpectation.fulfill()
+        }
+        
+        sut.requestNextQuestion()
+        
+        wait(for: [requestNextQuestionExpectation], timeout: 1.0)
+        XCTAssertTrue(questionFactoryStub.requestNextQuestionCalled, "Должен быть вызван requestNextQuestion" )
+        
+    }
 }
