@@ -78,6 +78,14 @@ final class MovieQuizPresenterTests: XCTestCase {
         )
     }
     
+    override func tearDown() {
+        sut = nil
+        viewControllerMock = nil
+        statisticServiceStub = nil
+        questionFactoryStub = nil
+        super.tearDown()
+    }
+    
     func testPresenterConvertModel() throws {
         
         guard let validImage = UIImage(named: "Deadpool"),
@@ -112,5 +120,9 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertTrue(questionFactoryStub.loadDataCalled, "Метод loadData() не был вызван")
     }
     
-
+    func didLoadDataFromServer() throws {
+        
+    }
+    
+    
 }
