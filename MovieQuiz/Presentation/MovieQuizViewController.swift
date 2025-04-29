@@ -17,10 +17,10 @@ final class MovieQuizViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureUI()
         presenter = MovieQuizDIContainer.makePresenter(viewController: self)
-        presenter.loadInitialData()
         alertPresenter = AlertPresenter(presentingController: self)
+        configureUI()
+        presenter.loadInitialData()
     }
     
     // MARK: - Actions

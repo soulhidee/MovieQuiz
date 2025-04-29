@@ -96,7 +96,12 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         isAnsweringNow = true
         viewController?.setAnswerButtonsState(isEnabled: false)
         
-        guard let currentQuestion = currentQuestion else { return }
+        guard let currentQuestion else {
+            isAnsweringNow = false
+            viewController?.setAnswerButtonsState(isEnabled: true)
+            return
+        }
+        
         let givenAnswer = isYes
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
