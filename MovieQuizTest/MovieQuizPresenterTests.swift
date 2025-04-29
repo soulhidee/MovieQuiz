@@ -1,11 +1,17 @@
 import XCTest
 @testable import MovieQuiz
 
+// MARK: - MovieQuizViewControllerMock
+
 final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     
     var setLoadingStateCalled = false
     var setLoadingStateArg: Bool?
     var setLoadingStateHandler: ((Bool) -> Void)?
+    
+    var showNetworkErrorCalled = false
+    var showNetworkErrorMassage: String?
+    var showNetworkErrorHandler: ((String) -> Void)?
     
     func show(quiz step: MovieQuiz.QuizStepViewModel) {
         
@@ -30,10 +36,13 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     }
     
     func showNetworkError(message: String) {
-        
+        showNetworkErrorCalled = true
+        showNetworkErrorMassage = message
+        showNetworkErrorHandler?(message)
     }
 }
 
+// MARK: - StubStatisticService
 
 final class StubStatisticService: StatisticServiceProtocol {
     var gamesCount: Int = 0
@@ -45,31 +54,30 @@ final class StubStatisticService: StatisticServiceProtocol {
     }
 }
 
+// MARK: - StubQuestionFactory
+
 final class StubQuestionFactory: QuestionFactoryProtocol {
     var loadDataCalled = false
     var loadDataCompletion: (() -> Void)?
     var requestNextQuestionCalled = false
     var requestNextQuestionHandler: (() -> Void)?
     
-    
-    
     func requestNextQuestion() {
         requestNextQuestionCalled = true
         requestNextQuestionHandler?()
     }
-    
-    
     
     func loadData() {
         loadDataCalled = true
         loadDataCompletion?()
     }
     
-    
     func generateQuestion(for movie: MovieQuiz.Movie) throws -> (questionText: String, correctAnswer: Bool) {
         return ("Question Text", true)
     }
 }
+
+// MARK: - MovieQuizPresenterTests
 
 final class MovieQuizPresenterTests: XCTestCase {
     var sut: MovieQuizPresenter!
@@ -77,6 +85,7 @@ final class MovieQuizPresenterTests: XCTestCase {
     var statisticServiceStub: StubStatisticService!
     var questionFactoryStub: StubQuestionFactory!
     
+    // MARK: - Setup / Teardown
     
     override func setUp() {
         super.setUp()
@@ -100,8 +109,9 @@ final class MovieQuizPresenterTests: XCTestCase {
         super.tearDown()
     }
     
+    // MARK: - Tests
+    
     func testPresenterConvertModel() throws {
-        
         guard let validImage = UIImage(named: "Deadpool"),
               let imageData = validImage.pngData() else {
             XCTFail("Не удалось создать imageData из мокового изображения")
@@ -121,7 +131,6 @@ final class MovieQuizPresenterTests: XCTestCase {
     }
     
     func testLoadInitialData() throws {
-        
         let expectation = self.expectation(description: "Loading data")
         questionFactoryStub.loadDataCompletion = {
             expectation.fulfill()
@@ -130,12 +139,10 @@ final class MovieQuizPresenterTests: XCTestCase {
         sut.loadInitialData()
         
         wait(for: [expectation], timeout: 1.0)
-        
         XCTAssertTrue(questionFactoryStub.loadDataCalled, "Метод loadData() не был вызван")
     }
     
     func testDidLoadDataFromServer() throws {
-        
         let setLoadingExpectation = self.expectation(description: "Должен быть вызван setLoadingState")
         let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
@@ -144,17 +151,35 @@ final class MovieQuizPresenterTests: XCTestCase {
             setLoadingExpectation.fulfill()
         }
         
-        questionFactoryStub.requestNextQuestionHandler = { 
+        questionFactoryStub.requestNextQuestionHandler = {
             requestNextQuestionExpectation.fulfill()
         }
         
         sut.didLoadDataFromServer()
         
         wait(for: [setLoadingExpectation, requestNextQuestionExpectation], timeout: 1.0)
-        
         XCTAssertTrue(viewControllerMock.setLoadingStateCalled, "setLoadingState не был вызван")
         XCTAssertTrue(questionFactoryStub.requestNextQuestionCalled, "requestNextQuestion не был вызван")
     }
     
-    
+    func testdidFailToLoadData() throws {
+        let setLoadingExpectation = self.expectation(description: "Должен быть вызван setLoadingState")
+        let showNetworkErrorExpectation = self.expectation(description: "Должен быть вызван showNetworkError")
+        
+        viewControllerMock.setLoadingStateHandler = { isLoading in
+            XCTAssertFalse(isLoading)
+            setLoadingExpectation.fulfill()
+        }
+        
+        viewControllerMock.showNetworkErrorHandler = { message in
+            XCTAssertEqual(message, NetworkError.imageDataCorrupted.localizedDescription)
+            showNetworkErrorExpectation.fulfill()
+        }
+        
+        sut.didFailToLoadData(with: NetworkError.imageDataCorrupted)
+        
+        wait(for: [setLoadingExpectation, showNetworkErrorExpectation], timeout: 1.0)
+        XCTAssertTrue(viewControllerMock.setLoadingStateCalled, "Должен быть вызван setLoadingState")
+        XCTAssertTrue(viewControllerMock.showNetworkErrorCalled, "Должен быть вызван showNetworkError")
+    }
 }
