@@ -30,12 +30,10 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     // MARK: - Data Loading
     
     func loadInitialData() {
-        print("Start loading initial data")
         questionFactory?.loadData()
     }
     
     func didLoadDataFromServer() {
-        print("Data loaded from server, requesting first question")
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.viewController?.setLoadingState(isLoading: true)
             self.requestNextQuestion()
@@ -43,7 +41,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     func didFailToLoadData(with error: Error) {
-        print("Failed to load data: \(error.localizedDescription)")
         if let networkError = error as? NetworkError {
             viewController?.setLoadingState(isLoading: false)
             viewController?.showNetworkError(message: networkError.errorDescription ?? "Неизвестная ошибка")
