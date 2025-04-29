@@ -51,17 +51,27 @@ final class StubQuestionFactory: QuestionFactoryProtocol {
 }
 
 final class MovieQuizPresenterTests: XCTestCase {
-    func testPresenterConvertModel() throws {
-
-        let viewControllerMock = MovieQuizViewControllerMock()
-        let statisticServiceStub = StubStatisticService()
-        let questionFactoryStub = StubQuestionFactory()
+    var sut: MovieQuizPresenter!
+    var viewControllerMock: MovieQuizViewControllerMock!
+    var statisticServiceStub: StubStatisticService!
+    var questionFactoryStub: StubQuestionFactory!
+    
+    
+    override func setUp() {
+        super.setUp()
         
-        let sut = MovieQuizPresenter(
+        viewControllerMock = MovieQuizViewControllerMock()
+        statisticServiceStub = StubStatisticService()
+        questionFactoryStub = StubQuestionFactory()
+        
+        sut = MovieQuizPresenter(
             viewController: viewControllerMock,
             statisticService: statisticServiceStub,
             questionFactory: questionFactoryStub
         )
+    }
+    
+    func testPresenterConvertModel() throws {
         
         guard let validImage = UIImage(named: "Deadpool"),
               let imageData = validImage.pngData() else {
@@ -80,4 +90,6 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertEqual(viewModel.question, "Question Text")
         XCTAssertEqual(viewModel.questionNumber, "1/10")
     }
+    
+
 }
