@@ -2,6 +2,11 @@ import XCTest
 @testable import MovieQuiz
 
 final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
+    
+    var setLoadingStateCalled = false
+    var setLoadingStateArg: Bool?
+    var setLoadingStateHandler: ((Bool) -> Void)?
+    
     func show(quiz step: MovieQuiz.QuizStepViewModel) {
         
     }
@@ -19,7 +24,9 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     }
     
     func setLoadingState(isLoading: Bool) {
-        
+        setLoadingStateCalled = true
+        setLoadingStateArg = isLoading
+        setLoadingStateHandler?(isLoading)
     }
     
     func showNetworkError(message: String) {
@@ -40,11 +47,18 @@ final class StubStatisticService: StatisticServiceProtocol {
 
 final class StubQuestionFactory: QuestionFactoryProtocol {
     var loadDataCalled = false
+    var loadDataCompletion: (() -> Void)?
+    var requestNextQuestionCalled = false
+    var requestNextQuestionHandler: (() -> Void)?
+    
+    
     
     func requestNextQuestion() {
+        requestNextQuestionCalled = true
+        requestNextQuestionHandler?()
     }
     
-    var loadDataCompletion: (() -> Void)?
+    
     
     func loadData() {
         loadDataCalled = true
@@ -120,8 +134,26 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertTrue(questionFactoryStub.loadDataCalled, "Метод loadData() не был вызван")
     }
     
-    func didLoadDataFromServer() throws {
+    func testDidLoadDataFromServer() throws {
         
+        let setLoadingExpectation = self.expectation(description: "Должен быть вызван setLoadingState")
+        let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
+        
+        viewControllerMock.setLoadingStateHandler = { isLoading in
+            XCTAssertTrue(isLoading)
+            setLoadingExpectation.fulfill()
+        }
+        
+        questionFactoryStub.requestNextQuestionHandler = { 
+            requestNextQuestionExpectation.fulfill()
+        }
+        
+        sut.didLoadDataFromServer()
+        
+        wait(for: [setLoadingExpectation, requestNextQuestionExpectation], timeout: 1.0)
+        
+        XCTAssertTrue(viewControllerMock.setLoadingStateCalled, "setLoadingState не был вызван")
+        XCTAssertTrue(questionFactoryStub.requestNextQuestionCalled, "requestNextQuestion не был вызван")
     }
     
     
