@@ -8,7 +8,7 @@ final class MovieQuizDIContainer {
             statisticService: statisticService,
             questionFactory: questionFactory
         )
-        questionFactory.delegate = presenter // Устанавливаем делегата после создания презентера
+        questionFactory.delegate = presenter 
         return presenter
     }
 }
