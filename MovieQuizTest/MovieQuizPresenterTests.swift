@@ -39,11 +39,18 @@ final class StubStatisticService: StatisticServiceProtocol {
 }
 
 final class StubQuestionFactory: QuestionFactoryProtocol {
+    var loadDataCalled = false
+    
     func requestNextQuestion() {
     }
     
+    var loadDataCompletion: (() -> Void)?
+    
     func loadData() {
+        loadDataCalled = true
+        loadDataCompletion?()
     }
+    
     
     func generateQuestion(for movie: MovieQuiz.Movie) throws -> (questionText: String, correctAnswer: Bool) {
         return ("Question Text", true)
@@ -89,6 +96,20 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertNotNil(viewModel.image)
         XCTAssertEqual(viewModel.question, "Question Text")
         XCTAssertEqual(viewModel.questionNumber, "1/10")
+    }
+    
+    func testLoadInitialData() throws {
+        
+        let expectation = self.expectation(description: "Loading data")
+        questionFactoryStub.loadDataCompletion = {
+            expectation.fulfill()
+        }
+        
+        sut.loadInitialData()
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        XCTAssertTrue(questionFactoryStub.loadDataCalled, "Метод loadData() не был вызван")
     }
     
 
