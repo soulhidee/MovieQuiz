@@ -391,4 +391,18 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertEqual(sut.getCurrentQuestionIndex(), 6, "currentQuestionIndex должен увеличиться на 1")
         
     }
+    
+    func testMakeResultsMessage() throws {
+        sut.correctAnswers = 7
+        statisticServiceStub.gamesCount = 10
+        statisticServiceStub.totalAccuracy = 70.0
+        statisticServiceStub.bestGame = MovieQuiz.GameResult(correct: 9, total: 10, date: Date(timeIntervalSince1970: 0))
+
+        let message = sut.makeResultsMessage()
+
+        XCTAssertTrue(message.contains("Ваш результат: 7/10"), "Сообщение должно содержать текущий результат")
+        XCTAssertTrue(message.contains("Количество сыгранных квизов: 10"), "Сообщение должно содержать общее число игр")
+        XCTAssertTrue(message.contains("Рекорд: 9/10"), "Сообщение должно содержать лучший результат")
+        XCTAssertTrue(message.contains("Средняя точность: 70.00%"), "Сообщение должно содержать среднюю точность")
+    }
 }
