@@ -348,7 +348,7 @@ final class MovieQuizPresenterTests: XCTestCase {
     }
     
     
-    func testShowNextQuestionOrResultsLastQuestion() {
+    func testShowNextQuestionOrResultsLastQuestion() throws {
         sut.correctAnswers = 7
         sut.setCurrentQuestionIndexForTest(9)
         sut.currentQuestion = QuizQuestion(image: Data(), text: "Test", correctAnswer: true)
@@ -365,5 +365,30 @@ final class MovieQuizPresenterTests: XCTestCase {
         sut.showAnswerResult(isCorrect: false)
         
         wait(for: [expectation], timeout: 2.0)
+    }
+    
+    func testShowNextQuestionOrResults() throws {
+        sut.correctAnswers = 7
+        sut.setCurrentQuestionIndexForTest(5)
+        sut.currentQuestion = QuizQuestion(image: Data(), text: "Test", correctAnswer: true)
+        
+        let setLoadingStateExpectation = expectation(description: "Должен быть вызван setLoadingState")
+        let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
+        
+        viewControllerMock.setLoadingStateHandler = { isLoading in
+                XCTAssertTrue(isLoading, "setLoadingState должен быть вызван с true")
+                setLoadingStateExpectation.fulfill()
+            }
+        
+        questionFactoryStub.requestNextQuestionHandler = {
+             requestNextQuestionExpectation.fulfill()
+         }
+        
+        sut.showAnswerResult(isCorrect: false)
+        
+        wait(for: [setLoadingStateExpectation, requestNextQuestionExpectation], timeout: 2.0)
+        
+        XCTAssertEqual(sut.getCurrentQuestionIndex(), 6, "currentQuestionIndex должен увеличиться на 1")
+        
     }
 }
