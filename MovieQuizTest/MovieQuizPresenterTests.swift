@@ -23,6 +23,8 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     var highlightImageBorderCalled = false
     var highlightImageBorderHandler: ((Bool) -> Void)?
     
+    var showResultCalled = false
+    var showResultHandler: ((QuizResultsViewModel) -> Void)?
     
     func show(quiz step: MovieQuiz.QuizStepViewModel) {
         showStepCalled = true
@@ -35,7 +37,8 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     }
     
     func show(quiz result: MovieQuiz.QuizResultsViewModel) {
-        
+        showResultCalled = true
+        showResultHandler?(result)
     }
     
     func setAnswerButtonsState(isEnabled: Bool) {
@@ -342,5 +345,25 @@ final class MovieQuizPresenterTests: XCTestCase {
     
     func  testShowAnswerResultFalse() throws {
         showAnswerResult(isCorrect: false)
+    }
+    
+    
+    func testShowNextQuestionOrResultsLastQuestion() {
+        sut.correctAnswers = 7
+        sut.setCurrentQuestionIndexForTest(9)
+        sut.currentQuestion = QuizQuestion(image: Data(), text: "Test", correctAnswer: true)
+        
+        let expectation = expectation(description: "Ожидается вызов show(quiz:) с результатом")
+        
+        viewControllerMock.showResultHandler = { result in
+            XCTAssertEqual(result.title, "Этот раунд окончен!")
+            XCTAssertEqual(result.text, "Ваш результат: 7/10")
+            XCTAssertEqual(result.buttonText, "Сыграть ещё раз")
+            expectation.fulfill()
+        }
+        
+        sut.showAnswerResult(isCorrect: false)
+        
+        wait(for: [expectation], timeout: 2.0)
     }
 }
