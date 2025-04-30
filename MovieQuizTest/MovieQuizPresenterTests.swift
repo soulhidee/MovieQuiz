@@ -14,10 +14,14 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     var showNetworkErrorHandler: ((String) -> Void)?
     
     var setAnswerButtonsHandler: ((Bool) -> Void)?
-
+    
+    var showStepCalled = false
+    var showStepHandler: ((QuizStepViewModel) -> Void)?
+    
     
     func show(quiz step: MovieQuiz.QuizStepViewModel) {
-        
+        showStepCalled = true
+        showStepHandler?(step)
     }
     
     func highlightImageBorder(isCorrectAnswer: Bool) {
@@ -186,7 +190,7 @@ final class MovieQuizPresenterTests: XCTestCase {
         XCTAssertTrue(viewControllerMock.showNetworkErrorCalled, "Должен быть вызван showNetworkError")
     }
     
-   func testRequestNextQuestion() throws {
+    func testRequestNextQuestion() throws {
         let expectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
         questionFactoryStub.requestNextQuestionHandler = {
@@ -219,8 +223,8 @@ final class MovieQuizPresenterTests: XCTestCase {
     
     func testYesClickDisablesButtons() throws {
         clickDisablesButtons(correctAnswer: true) {
-               sut.yesButtonClicked()
-           }
+            sut.yesButtonClicked()
+        }
     }
     
     
@@ -229,4 +233,37 @@ final class MovieQuizPresenterTests: XCTestCase {
             sut.noButtonClicked()
         }
     }
+    
+    func testDidReceiveNextQuestion() throws {
+        
+        guard let image = UIImage(named: "Deadpool"),
+              let imageData = image.pngData() else {
+            XCTFail("Не удалось создать imageData из мокового изображения")
+            return
+        }
+        
+        let question = QuizQuestion(image: imageData, text: "Вопрос?", correctAnswer: true)
+        
+        let setLoadingStateExpectation = expectation(description: "Должен быть вызван setLoadingState")
+        let showExpectation = expectation(description: "Должан быть вызван show(quiz:)")
+        
+        viewControllerMock.setLoadingStateHandler = { isLoading in
+            XCTAssertFalse(isLoading)
+            setLoadingStateExpectation.fulfill()
+        }
+        
+        viewControllerMock.showStepHandler = { step in
+            XCTAssertEqual(step.question, "Вопрос?")
+            XCTAssertEqual(step.questionNumber, "1/10")
+            showExpectation.fulfill()
+        }
+        
+        sut.didReceiveNextQuestion(question: question)
+        
+        wait(for: [setLoadingStateExpectation, showExpectation], timeout: 1.0)
+        
+        XCTAssertTrue(viewControllerMock.setLoadingStateCalled)
+        XCTAssertTrue(viewControllerMock.showStepCalled)
+    }
+    
 }
