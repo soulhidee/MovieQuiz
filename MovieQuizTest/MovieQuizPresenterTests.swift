@@ -299,18 +299,18 @@ final class MovieQuizPresenterTests: XCTestCase {
         
     }
     
-    func testShowAnswerResult() throws {
+    func showAnswerResult(isCorrect: Bool) {
         let question = QuizQuestion(image: Data(), text: "Test Question", correctAnswer: true)
         sut.currentQuestion = question
         
-        let highlightImageBorderExpectation = expectation(description: "Должен быть вызванн highlightImageBorder с true")
+        let highlightImageBorderExpectation = expectation(description: "Должен быть вызван highlightImageBorder с \(isCorrect ? "true" : "false")")
         let enableButtonsExpectation = expectation(description: "Кнопки должны быть включены")
         let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
         sut.correctAnswers = 0
         
         viewControllerMock.highlightImageBorderHandler = { isCorrectAnswer in
-            XCTAssertTrue(isCorrectAnswer)
+            XCTAssertEqual(isCorrectAnswer, isCorrect)
             highlightImageBorderExpectation.fulfill()
         }
         
@@ -323,11 +323,24 @@ final class MovieQuizPresenterTests: XCTestCase {
             requestNextQuestionExpectation.fulfill()
         }
         
-        sut.showAnswerResult(isCorrect: true)
+        sut.showAnswerResult(isCorrect: isCorrect)
         
         wait(for: [highlightImageBorderExpectation, enableButtonsExpectation, requestNextQuestionExpectation], timeout: 2.0)
-        XCTAssertEqual(sut.correctAnswers, 1, "correctAnswers должен увеличиться до 1")
-        XCTAssertTrue(viewControllerMock.highlightImageBorderCalled)
         
+        if isCorrect {
+            XCTAssertEqual(sut.correctAnswers, 1, "correctAnswers должен увеличиться до 1")
+        } else {
+            XCTAssertEqual(sut.correctAnswers, 0, "correctAnswers не должен увеличиться")
+        }
+        
+        XCTAssertTrue(viewControllerMock.highlightImageBorderCalled)
+    }
+    
+    func testShowAnswerResultTrue() throws {
+        showAnswerResult(isCorrect: true)
+    }
+    
+    func  testShowAnswerResultFalse() throws {
+        showAnswerResult(isCorrect: false)
     }
 }
