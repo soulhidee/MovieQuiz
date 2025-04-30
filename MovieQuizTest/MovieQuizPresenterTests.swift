@@ -20,6 +20,9 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     var showStepCalled = false
     var showStepHandler: ((QuizStepViewModel) -> Void)?
     
+    var highlightImageBorderCalled = false
+    var highlightImageBorderHandler: ((Bool) -> Void)?
+    
     
     func show(quiz step: MovieQuiz.QuizStepViewModel) {
         showStepCalled = true
@@ -27,7 +30,8 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
     }
     
     func highlightImageBorder(isCorrectAnswer: Bool) {
-        
+        highlightImageBorderCalled = true
+        highlightImageBorderHandler?(isCorrectAnswer)
     }
     
     func show(quiz result: MovieQuiz.QuizResultsViewModel) {
@@ -295,4 +299,35 @@ final class MovieQuizPresenterTests: XCTestCase {
         
     }
     
+    func testShowAnswerResult() throws {
+        let question = QuizQuestion(image: Data(), text: "Test Question", correctAnswer: true)
+        sut.currentQuestion = question
+        
+        let highlightImageBorderExpectation = expectation(description: "Должен быть вызванн highlightImageBorder с true")
+        let enableButtonsExpectation = expectation(description: "Кнопки должны быть включены")
+        let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
+        
+        sut.correctAnswers = 0
+        
+        viewControllerMock.highlightImageBorderHandler = { isCorrectAnswer in
+            XCTAssertTrue(isCorrectAnswer)
+            highlightImageBorderExpectation.fulfill()
+        }
+        
+        viewControllerMock.setAnswerButtonsHandler = { isEnabled in
+            XCTAssertTrue(isEnabled)
+            enableButtonsExpectation.fulfill()
+        }
+        
+        questionFactoryStub.requestNextQuestionHandler = {
+            requestNextQuestionExpectation.fulfill()
+        }
+        
+        sut.showAnswerResult(isCorrect: true)
+        
+        wait(for: [highlightImageBorderExpectation, enableButtonsExpectation, requestNextQuestionExpectation], timeout: 2.0)
+        XCTAssertEqual(sut.correctAnswers, 1, "correctAnswers должен увеличиться до 1")
+        XCTAssertTrue(viewControllerMock.highlightImageBorderCalled)
+        
+    }
 }

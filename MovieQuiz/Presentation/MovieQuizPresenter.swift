@@ -11,9 +11,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private var currentQuestionIndex: Int = .zero
     private var isAnsweringNow = false
     private let questionsAmount = 10
+    var correctAnswers: Int = .zero
+    
     
     var currentQuestion: QuizQuestion?
-    var correctAnswers: Int = .zero
+    
     
     weak var viewController: MovieQuizViewControllerProtocol?
     
@@ -109,7 +111,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    private func showAnswerResult(isCorrect: Bool) {
+    func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             didAnswer(isCorrectAnswer: true)
         }
