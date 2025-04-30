@@ -270,10 +270,28 @@ final class MovieQuizPresenterTests: XCTestCase {
     }
     
     func testRestartGame() throws {
-        sut.correctAnswers = 1
-        sut.currentQuestionIndex = 9
+        sut.correctAnswers = 9
         
+        let setLoadingStateExpectation = expectation(description: "Должен быть вызван setLoadingState")
+        let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
+        viewControllerMock.setLoadingStateHandler = { isLoading in
+            XCTAssertTrue(isLoading)
+            setLoadingStateExpectation.fulfill()
+        }
+        
+        questionFactoryStub.requestNextQuestionHandler = {
+            requestNextQuestionExpectation.fulfill()
+        }
+        
+        sut.restartGame()
+        
+        wait(for: [setLoadingStateExpectation, requestNextQuestionExpectation], timeout: 1.0)
+        
+        XCTAssertEqual(sut.correctAnswers, 0, "correctAnswers должно быть сброшено до 0")
+        XCTAssertEqual(sut.getCurrentQuestionIndex(), 0, "currentQuestionIndex должно быть сброшено до 0")
+        XCTAssertTrue(viewControllerMock.setLoadingStateCalled, "setLoadingState не был вызван")
+        XCTAssertTrue(questionFactoryStub.requestNextQuestionCalled, "requestNextQuestion не был вызван")
         
     }
     
