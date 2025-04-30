@@ -1,26 +1,21 @@
 import UIKit
 
 // MARK: - MovieQuizPresenter
-
 final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     // MARK: - Properties
-    
     private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticServiceProtocol!
     private var currentQuestionIndex: Int = .zero
     private var isAnsweringNow = false
     private let questionsAmount = 10
+    
     var correctAnswers: Int = .zero
-    
-    
     var currentQuestion: QuizQuestion?
-    
     
     weak var viewController: MovieQuizViewControllerProtocol?
     
     // MARK: - Initializer
-    
     init(viewController: MovieQuizViewControllerProtocol,
          statisticService: StatisticServiceProtocol,
          questionFactory: QuestionFactoryProtocol) {
@@ -30,18 +25,17 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Data Loading
-    //Тест написан
     func loadInitialData() {
         questionFactory?.loadData()
     }
-    //Тест написан
+
     func didLoadDataFromServer() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.viewController?.setLoadingState(isLoading: true)
             self.requestNextQuestion()
         }
     }
-    //Текст написан
+
     func didFailToLoadData(with error: Error) {
         if let networkError = error as? NetworkError {
             viewController?.setLoadingState(isLoading: false)
@@ -50,7 +44,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Question Handling
-    //Тест написан
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
         currentQuestion = question
@@ -62,7 +55,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             self?.viewController?.show(quiz: viewModel)
         }
     }
-    //Тест написан
+
     func convert(model: QuizQuestion) -> QuizStepViewModel? {
         guard let image = UIImage(data: model.image) else {
             viewController?.showNetworkError(message: NetworkError.imageDataCorrupted.localizedDescription)
@@ -75,21 +68,20 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)"
         )
     }
-    //Тест написан
+    
     func requestNextQuestion() {
         questionFactory?.requestNextQuestion()
     }
     
     // MARK: - Answer Handling
-    //Тест написан
+
     func yesButtonClicked() {
         didAnswer(isYes: true)
     }
-    //Тест написан
+
     func noButtonClicked() {
         didAnswer(isYes: false)
     }
-    
     
     private func didAnswer(isYes: Bool) {
         guard !isAnsweringNow else { return }
@@ -112,8 +104,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    
-    
     func showAnswerResult(isCorrect: Bool) {
         if isCorrect {
             didAnswer(isCorrectAnswer: true)
@@ -131,7 +121,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Next Question or Results
-    
     private func showNextQuestionOrResults() {
         if isLastQuestion() {
             let result = QuizResultsViewModel(

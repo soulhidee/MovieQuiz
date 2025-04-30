@@ -76,4 +76,5 @@ class MovieQuizUITests: XCTestCase {
         XCTAssertTrue(indexLabel.waitForExistence(timeout: 5))
         XCTAssertEqual(indexLabel.label, "1/10")
     }
+
 }
