@@ -1,6 +1,8 @@
 import XCTest
 @testable import MovieQuiz
 
+
+
 // MARK: - MovieQuizViewControllerMock
 
 final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
@@ -83,6 +85,7 @@ final class StubQuestionFactory: QuestionFactoryProtocol {
         return ("Question Text", true)
     }
 }
+
 
 // MARK: - MovieQuizPresenterTests
 
@@ -264,6 +267,14 @@ final class MovieQuizPresenterTests: XCTestCase {
         
         XCTAssertTrue(viewControllerMock.setLoadingStateCalled)
         XCTAssertTrue(viewControllerMock.showStepCalled)
+    }
+    
+    func testRestartGame() throws {
+        sut.correctAnswers = 1
+        sut.currentQuestionIndex = 9
+        
+        
+        
     }
     
 }

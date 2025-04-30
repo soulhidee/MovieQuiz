@@ -143,6 +143,9 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - Helpers
+    func getCurrentQuestionIndex() -> Int {
+        return currentQuestionIndex
+    }
     
     private func isLastQuestion() -> Bool {
         return currentQuestionIndex == questionsAmount - 1
