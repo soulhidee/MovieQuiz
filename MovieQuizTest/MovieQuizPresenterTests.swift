@@ -1,115 +1,20 @@
 import XCTest
 @testable import MovieQuiz
 
-
-
-// MARK: - MovieQuizViewControllerMock
-
-final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
-    
-    var setLoadingStateCalled = false
-    var setLoadingStateArg: Bool?
-    var setLoadingStateHandler: ((Bool) -> Void)?
-    
-    var showNetworkErrorCalled = false
-    var showNetworkErrorMassage: String?
-    var showNetworkErrorHandler: ((String) -> Void)?
-    
-    var setAnswerButtonsHandler: ((Bool) -> Void)?
-    
-    var showStepCalled = false
-    var showStepHandler: ((QuizStepViewModel) -> Void)?
-    
-    var highlightImageBorderCalled = false
-    var highlightImageBorderHandler: ((Bool) -> Void)?
-    
-    var showResultCalled = false
-    var showResultHandler: ((QuizResultsViewModel) -> Void)?
-    
-    func show(quiz step: MovieQuiz.QuizStepViewModel) {
-        showStepCalled = true
-        showStepHandler?(step)
-    }
-    
-    func highlightImageBorder(isCorrectAnswer: Bool) {
-        highlightImageBorderCalled = true
-        highlightImageBorderHandler?(isCorrectAnswer)
-    }
-    
-    func show(quiz result: MovieQuiz.QuizResultsViewModel) {
-        showResultCalled = true
-        showResultHandler?(result)
-    }
-    
-    func setAnswerButtonsState(isEnabled: Bool) {
-        setAnswerButtonsHandler?(isEnabled)
-    }
-    
-    func setLoadingState(isLoading: Bool) {
-        setLoadingStateCalled = true
-        setLoadingStateArg = isLoading
-        setLoadingStateHandler?(isLoading)
-    }
-    
-    func showNetworkError(message: String) {
-        showNetworkErrorCalled = true
-        showNetworkErrorMassage = message
-        showNetworkErrorHandler?(message)
-    }
-}
-
-// MARK: - StubStatisticService
-
-final class StubStatisticService: StatisticServiceProtocol {
-    var gamesCount: Int = 0
-    var bestGame = MovieQuiz.GameResult(correct: 0, total: 0, date: Date())
-    var totalAccuracy: Double = 0.0
-    
-    func store(correct count: Int, total amount: Int) {
-        
-    }
-}
-
-// MARK: - StubQuestionFactory
-
-final class StubQuestionFactory: QuestionFactoryProtocol {
-    var loadDataCalled = false
-    var loadDataCompletion: (() -> Void)?
-    var requestNextQuestionCalled = false
-    var requestNextQuestionHandler: (() -> Void)?
-    
-    func requestNextQuestion() {
-        requestNextQuestionCalled = true
-        requestNextQuestionHandler?()
-    }
-    
-    func loadData() {
-        loadDataCalled = true
-        loadDataCompletion?()
-    }
-    
-    func generateQuestion(for movie: MovieQuiz.Movie) throws -> (questionText: String, correctAnswer: Bool) {
-        return ("Question Text", true)
-    }
-}
-
-
 // MARK: - MovieQuizPresenterTests
-
 final class MovieQuizPresenterTests: XCTestCase {
     var sut: MovieQuizPresenter!
     var viewControllerMock: MovieQuizViewControllerMock!
-    var statisticServiceStub: StubStatisticService!
-    var questionFactoryStub: StubQuestionFactory!
+    var statisticServiceStub: StubStatisticServiceMock!
+    var questionFactoryStub: StubQuestionFactoryMock!
     
     // MARK: - Setup / Teardown
-    
     override func setUp() {
         super.setUp()
         
         viewControllerMock = MovieQuizViewControllerMock()
-        statisticServiceStub = StubStatisticService()
-        questionFactoryStub = StubQuestionFactory()
+        statisticServiceStub = StubStatisticServiceMock()
+        questionFactoryStub = StubQuestionFactoryMock()
         
         sut = MovieQuizPresenter(
             viewController: viewControllerMock,
@@ -127,8 +32,8 @@ final class MovieQuizPresenterTests: XCTestCase {
     }
     
     // MARK: - Tests
-    
     func testPresenterConvertModel() throws {
+        // Given
         guard let validImage = UIImage(named: "Deadpool"),
               let imageData = validImage.pngData() else {
             XCTFail("Не удалось создать imageData из мокового изображения")
@@ -137,29 +42,35 @@ final class MovieQuizPresenterTests: XCTestCase {
         
         let question = QuizQuestion(image: imageData, text: "Question Text", correctAnswer: true)
         
+        // When
         guard let viewModel = sut.convert(model: question) else {
             XCTFail("convert(model:) вернул nil")
             return
         }
         
+        // Then
         XCTAssertNotNil(viewModel.image)
         XCTAssertEqual(viewModel.question, "Question Text")
         XCTAssertEqual(viewModel.questionNumber, "1/10")
     }
     
     func testLoadInitialData() throws {
+        // Given
         let expectation = self.expectation(description: "Loading data")
         questionFactoryStub.loadDataCompletion = {
             expectation.fulfill()
         }
         
+        // When
         sut.loadInitialData()
         
+        // Then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertTrue(questionFactoryStub.loadDataCalled, "Метод loadData() не был вызван")
     }
     
     func testDidLoadDataFromServer() throws {
+        // Given
         let setLoadingExpectation = self.expectation(description: "Должен быть вызван setLoadingState")
         let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
@@ -172,14 +83,17 @@ final class MovieQuizPresenterTests: XCTestCase {
             requestNextQuestionExpectation.fulfill()
         }
         
+        // When
         sut.didLoadDataFromServer()
         
+        // Then
         wait(for: [setLoadingExpectation, requestNextQuestionExpectation], timeout: 1.0)
         XCTAssertTrue(viewControllerMock.setLoadingStateCalled, "setLoadingState не был вызван")
         XCTAssertTrue(questionFactoryStub.requestNextQuestionCalled, "requestNextQuestion не был вызван")
     }
     
     func testdidFailToLoadData() throws {
+        // Given
         let setLoadingExpectation = self.expectation(description: "Должен быть вызван setLoadingState")
         let showNetworkErrorExpectation = self.expectation(description: "Должен быть вызван showNetworkError")
         
@@ -193,28 +107,34 @@ final class MovieQuizPresenterTests: XCTestCase {
             showNetworkErrorExpectation.fulfill()
         }
         
+        // When
         sut.didFailToLoadData(with: NetworkError.imageDataCorrupted)
         
+        // Then
         wait(for: [setLoadingExpectation, showNetworkErrorExpectation], timeout: 1.0)
         XCTAssertTrue(viewControllerMock.setLoadingStateCalled, "Должен быть вызван setLoadingState")
         XCTAssertTrue(viewControllerMock.showNetworkErrorCalled, "Должен быть вызван showNetworkError")
     }
     
     func testRequestNextQuestion() throws {
+        // Given
         let expectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
         questionFactoryStub.requestNextQuestionHandler = {
             expectation.fulfill()
         }
         
+        // When
         sut.requestNextQuestion()
         
+        // Then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertTrue(questionFactoryStub.requestNextQuestionCalled, "Должен быть вызван requestNextQuestion" )
         
     }
     
     func clickDisablesButtons(correctAnswer: Bool, clickAction: () -> Void) {
+        // Given
         let question = QuizQuestion(image: Data(), text: "Test", correctAnswer: correctAnswer)
         sut.currentQuestion = question
         
@@ -225,27 +145,37 @@ final class MovieQuizPresenterTests: XCTestCase {
             expectation.fulfill()
         }
         
+        // When
         clickAction()
         
+        // Then
         wait(for: [expectation], timeout: 1.0)
     }
     
     
     func testYesClickDisablesButtons() throws {
-        clickDisablesButtons(correctAnswer: true) {
+        // Given
+        let correctAnswer = true
+        
+        // When & Then
+        clickDisablesButtons(correctAnswer: correctAnswer) {
             sut.yesButtonClicked()
         }
     }
     
     
     func testNoClickDisablesButtons() throws {
-        clickDisablesButtons(correctAnswer: false) {
+        // Given
+        let correctAnswer = false
+        
+        // When & Then
+        clickDisablesButtons(correctAnswer: correctAnswer) {
             sut.noButtonClicked()
         }
     }
     
     func testDidReceiveNextQuestion() throws {
-        
+        // Given
         guard let image = UIImage(named: "Deadpool"),
               let imageData = image.pngData() else {
             XCTFail("Не удалось создать imageData из мокового изображения")
@@ -268,8 +198,10 @@ final class MovieQuizPresenterTests: XCTestCase {
             showExpectation.fulfill()
         }
         
+        // When
         sut.didReceiveNextQuestion(question: question)
         
+        // Then
         wait(for: [setLoadingStateExpectation, showExpectation], timeout: 1.0)
         
         XCTAssertTrue(viewControllerMock.setLoadingStateCalled)
@@ -277,6 +209,7 @@ final class MovieQuizPresenterTests: XCTestCase {
     }
     
     func testRestartGame() throws {
+        // Given
         sut.correctAnswers = 9
         
         let setLoadingStateExpectation = expectation(description: "Должен быть вызван setLoadingState")
@@ -291,8 +224,10 @@ final class MovieQuizPresenterTests: XCTestCase {
             requestNextQuestionExpectation.fulfill()
         }
         
+        // When
         sut.restartGame()
         
+        // Then
         wait(for: [setLoadingStateExpectation, requestNextQuestionExpectation], timeout: 1.0)
         
         XCTAssertEqual(sut.correctAnswers, 0, "correctAnswers должно быть сброшено до 0")
@@ -303,6 +238,7 @@ final class MovieQuizPresenterTests: XCTestCase {
     }
     
     func showAnswerResult(isCorrect: Bool) {
+        // Given
         let question = QuizQuestion(image: Data(), text: "Test Question", correctAnswer: true)
         sut.currentQuestion = question
         
@@ -326,8 +262,10 @@ final class MovieQuizPresenterTests: XCTestCase {
             requestNextQuestionExpectation.fulfill()
         }
         
+        // When
         sut.showAnswerResult(isCorrect: isCorrect)
         
+        // Then
         wait(for: [highlightImageBorderExpectation, enableButtonsExpectation, requestNextQuestionExpectation], timeout: 2.0)
         
         if isCorrect {
@@ -340,15 +278,24 @@ final class MovieQuizPresenterTests: XCTestCase {
     }
     
     func testShowAnswerResultTrue() throws {
-        showAnswerResult(isCorrect: true)
+        // Given
+        let isCorrect = true
+        
+        // When & Then
+        showAnswerResult(isCorrect: isCorrect)
     }
     
     func  testShowAnswerResultFalse() throws {
-        showAnswerResult(isCorrect: false)
+        // Given
+        let isCorrect = false
+        
+        // When & Then
+        showAnswerResult(isCorrect: isCorrect)
     }
     
     
     func testShowNextQuestionOrResultsLastQuestion() throws {
+        // Given
         sut.correctAnswers = 7
         sut.setCurrentQuestionIndexForTest(9)
         sut.currentQuestion = QuizQuestion(image: Data(), text: "Test", correctAnswer: true)
@@ -362,12 +309,15 @@ final class MovieQuizPresenterTests: XCTestCase {
             expectation.fulfill()
         }
         
+        // When
         sut.showAnswerResult(isCorrect: false)
         
+        // Then
         wait(for: [expectation], timeout: 2.0)
     }
     
     func testShowNextQuestionOrResults() throws {
+        // Given
         sut.correctAnswers = 7
         sut.setCurrentQuestionIndexForTest(5)
         sut.currentQuestion = QuizQuestion(image: Data(), text: "Test", correctAnswer: true)
@@ -376,30 +326,34 @@ final class MovieQuizPresenterTests: XCTestCase {
         let requestNextQuestionExpectation = self.expectation(description: "Должен быть вызван requestNextQuestion")
         
         viewControllerMock.setLoadingStateHandler = { isLoading in
-                XCTAssertTrue(isLoading, "setLoadingState должен быть вызван с true")
-                setLoadingStateExpectation.fulfill()
-            }
+            XCTAssertTrue(isLoading, "setLoadingState должен быть вызван с true")
+            setLoadingStateExpectation.fulfill()
+        }
         
         questionFactoryStub.requestNextQuestionHandler = {
-             requestNextQuestionExpectation.fulfill()
-         }
+            requestNextQuestionExpectation.fulfill()
+        }
         
+        // When
         sut.showAnswerResult(isCorrect: false)
         
+        // Then
         wait(for: [setLoadingStateExpectation, requestNextQuestionExpectation], timeout: 2.0)
-        
         XCTAssertEqual(sut.getCurrentQuestionIndex(), 6, "currentQuestionIndex должен увеличиться на 1")
         
     }
     
     func testMakeResultsMessage() throws {
+        // Given
         sut.correctAnswers = 7
         statisticServiceStub.gamesCount = 10
         statisticServiceStub.totalAccuracy = 70.0
         statisticServiceStub.bestGame = MovieQuiz.GameResult(correct: 9, total: 10, date: Date(timeIntervalSince1970: 0))
-
+        
+        // When
         let message = sut.makeResultsMessage()
-
+        
+        // Then
         XCTAssertTrue(message.contains("Ваш результат: 7/10"), "Сообщение должно содержать текущий результат")
         XCTAssertTrue(message.contains("Количество сыгранных квизов: 10"), "Сообщение должно содержать общее число игр")
         XCTAssertTrue(message.contains("Рекорд: 9/10"), "Сообщение должно содержать лучший результат")
